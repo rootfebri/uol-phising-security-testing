@@ -1,0 +1,200 @@
+const submitButton = document.querySelector(".submit-button-webmail-login");
+const inputEmail = document.querySelector(".email-input-webmail-login");
+const messageContainer = document.querySelector(".container-message-webmail-login");
+const backgroundPopup = document.querySelector(".popup-background-webmail-login");
+const backgroundPopupLoader = document.querySelector(".popup-loader-webmail-login");
+
+let inputPassword = document.querySelector(".password-input-webmail-login");
+let openedEye = document.querySelector(".opened-eye");
+let closedEye = document.querySelector(".closed-eye");
+let authRoute = "";
+let dominio = "";
+
+if (openedEye) {
+    openedEye.addEventListener("click", function () {
+        togglePassword(inputPassword, openedEye, closedEye);
+    });
+}
+
+if (closedEye) {
+    closedEye.addEventListener("click", function () {
+        togglePassword(inputPassword, openedEye, closedEye);
+    });
+}
+
+function togglePassword(inputPassword, openedEye, closedEye) {
+    if (inputPassword.type === "password") {
+        inputPassword.type = "text";
+        openedEye.style.display = "none";
+        closedEye.style.display = "flex";
+    } else {
+        inputPassword.type = "password";
+        closedEye.style.display = "none";
+        openedEye.style.display = "flex";
+    }
+}
+
+function showLoadingButton(submitButton, padding=false, exit=false) {
+    if (exit) {
+        submitButton.classList.add("exit-button--loading");
+    } else {
+        submitButton.classList.add("button--loading");
+    }
+    submitButton.innerHTML = "";
+    submitButton.disabled = true;
+    if (padding) {
+        submitButton.style.marginTop = "62px";
+    }
+}
+
+function hideLoadingButton(submitButton) {
+    submitButton.classList.remove("button--loading");
+    submitButton.innerHTML = "Acessar meu e-mail";
+    submitButton.disabled = false;
+}
+
+function showErrorMessage(submitButton, messageContainer, message) {
+    messageContainer.innerHTML = message;
+    messageContainer.style.display = "flex";
+    submitButton.style.marginTop = "10px";
+}
+
+function handleClick(event, appUrlPrefix, domain="", captchaActive="true") {
+    event.preventDefault();
+    authRoute = appUrlPrefix;
+    dominio = domain;
+    if (captchaActive.toLowerCase() === "true") {
+        grecaptcha.reset();
+        grecaptcha.execute();
+    } else {
+        onRecaptchaSuccess("disable");
+    }
+}
+
+function onRecaptchaSuccess(token) {
+    loginAuthentication(backgroundPopupLoader, backgroundPopup, submitButton, messageContainer, inputEmail.value, inputPassword.value, token, authRoute, dominio);
+    if (document.getElementById("recaptcha")) {
+        grecaptcha.reset();
+    }
+}
+
+function loginAuthentication(backgroundPopupLoader, backgroundPopup, submitButton, messageContainer, username, password, token, authRoute, domain="") {
+    const DEFAULT_ERROR_MESSAGE = "Não foi possível realizar o login :(<br/>Ligue para 0800 777 9797";
+    let isDefaultError = true;
+
+    if (messageContainer.style.display != "none") {
+        messageContainer.style.display = "none";
+    }
+    if (submitButton.style.marginTop != "54px") {
+        submitButton.style.marginTop = "54px";
+    }
+
+    showLoadingButton(submitButton, true, false);
+    const formData = new FormData();
+    formData.append("user", username);
+    formData.append("pass", password);
+    formData.append("captcha", token);
+    if (domain) {
+        formData.append("domain", domain);
+    }
+
+    fetch(`${authRoute}`, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        hideLoadingButton(submitButton);
+        return response.json();
+    })
+    .then(function(obj) {
+        if (typeof(obj) == 'object') {
+            if (obj.hasOwnProperty("statusCode")) {
+                switch(obj.statusCode) {
+                    case 0:
+                        backgroundPopup.style.display = "flex";
+                        backgroundPopupLoader.style.display = "flex";
+                        window.location.href = obj.data.url;
+                        break;
+                    case 1:
+                        document.body.innerHTML = obj.data.html;
+                        break;
+                    case -1:
+                        isDefaultError = false;
+                        throw new Error(obj.data.error);
+                  }
+            }
+        }
+        throw new Error(DEFAULT_ERROR_MESSAGE);
+    })
+    .catch(error => {
+        if (isDefaultError) {
+            error.message = DEFAULT_ERROR_MESSAGE;
+        }
+
+        hideLoadingButton(submitButton);
+        showErrorMessage(submitButton, messageContainer, error.message);
+    });
+}
+
+if (submitButton) {
+    submitButton.addEventListener("click", (e) => {
+        e.preventDefault();
+    });
+}
+
+function exitButton(url, username, msgCode, confirmRead, messageRoute) {
+    const exitBtn = document.querySelector(".exit-button-webmail-porteira");
+    showLoadingButton(exitBtn, false, true);
+
+    if (!confirmRead) {
+        readMsg(username, msgCode, messageRoute);
+    }
+
+    if (!url) {
+        location.reload();
+    }
+
+    location.href = url;
+}
+
+function resolveNow(url, username, msgCode, confirmRead, messageRoute) {
+    let submitButton = document.querySelector(".submit-button-animation-webmail-porteira");
+    showLoadingButton(submitButton, false, false);
+
+    if (!confirmRead) {
+        readMsg(username, msgCode, messageRoute);
+    }
+
+    if (!url) {
+        location.reload();
+    }
+
+    location.href = url;
+}
+
+function readMsg(username, msgCode, messageRoute) {
+    let data = new FormData();
+    data.append("username", username);
+    data.append("msgCode", msgCode);
+
+    fetch(`${messageRoute}`, {
+        method: 'POST',
+        body: data,
+    })
+    .then(response => {
+        return response;
+    })
+}
+
+if (document.getElementById('banner-slider')) {
+    $("#banner-slider").sudoSlider({
+        auto: true,
+        continuous: false,
+        numeric: true,
+        prevNext: false,
+        speed: 400,
+        pause: 7000,
+        responsive: true,
+        autoWidth: true
+    });
+}

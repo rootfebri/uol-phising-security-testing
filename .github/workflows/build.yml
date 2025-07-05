@@ -1,0 +1,43 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Ensure all history is fetched for correct tag creation
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:latest
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Run build
+        run: chmod +x ci-build.sh && ./ci-build.sh "Terra-${{ github.ref_name }}.zip" && rm ci-build.sh
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Terra-${{ github.ref_name }}
+          path: Terra-${{ github.ref_name }}.zip
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: Terra-${{ github.ref_name }}.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Remove Tag on Failure
+        if: failure()
+        run: git push --delete ${{ github.ref_name }} || true
