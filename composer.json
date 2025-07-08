@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "rootfebri/terra",
+    "name": "rootfebri/uol-mail",
     "type": "project",
     "require": {
         "php": "^8.2",
@@ -14,6 +14,7 @@
         "whichbrowser/parser": "^2.1"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.18",
@@ -43,7 +44,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "bunx --bun concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --port=6969\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=server,queue,logs,vite"
+            "bunx --bun concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --port=6969\" \"php artisan queue:listen --tries=1\" \"bun run dev\" --names=server,queue,vite"
         ]
     },
     "extra": {

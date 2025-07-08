@@ -7,9 +7,34 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+    font-family: UOLText;
+    src: url(/uol-text-regular.eot?#iefix) format("embedded-opentype"),
+    url(/uol-text-regular.woff) format("woff"),
+    url(/uol-text-regular.ttf) format("truetype"),
+    url(/uol-text-regular.svg#svgUOLText) format("svg")
+}
+
+@font-face {
+    font-family: UOLText;
+    src: url(/uol-text-italic.eot?#iefix) format("embedded-opentype"),
+    url(/uol-text-italic.woff) format("woff"),
+    url(/uol-text-italic.ttf) format("truetype"),
+    url(/uol-text-italic.svg#svgUOLText) format("svg");
+    font-style: italic
+}
+
+@font-face {
+    font-family: UOLText;
+    src: url(/uol-text-bold.eot?#iefix) format("embedded-opentype"),
+    url(/uol-text-bold.woff) format("woff"),
+    url(/uol-text-bold.ttf) format("truetype"),
+    url(/uol-text-bold.svg#svgUOLText) format("svg");
+    font-weight: 700
+}
+
 @theme {
-    --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: UOLText, sans-serif;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -111,41 +136,6 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
-}
-
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.145 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.145 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.396 0.141 25.723);
-    --destructive-foreground: oklch(0.637 0.237 25.331);
-    --border: oklch(0.269 0 0);
-    --input: oklch(0.269 0 0);
-    --ring: oklch(0.439 0 0);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.985 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(0.269 0 0);
-    --sidebar-ring: oklch(0.439 0 0);
 }
 
 @layer base {

