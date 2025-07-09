@@ -83,7 +83,9 @@ export default function Index() {
                             <div className="min-h-26 w-full">
                                 <Label className="truncate">Data de validade</Label>
                                 <Input
-                                    className="w-full rounded-sm"
+                                    className={cn('w-full rounded-sm shadow-none', {
+                                        'border-red-500': errors.expiryDate,
+                                    })}
                                     autoComplete="off"
                                     value={data.expiryDate.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/')}
                                     onChange={({ target: { value } }) => {
@@ -101,9 +103,11 @@ export default function Index() {
                             <div className="min-h-26 w-full">
                                 <Label className="truncate">Código de segurança</Label>
                                 <Input
-                                    className="w-full rounded-sm"
+                                    className={cn('w-full rounded-sm shadow-none', {
+                                        'border-red-500': errors.cvv,
+                                    })}
                                     autoComplete="off"
-                                    value={data.expiryDate.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/')}
+                                    value={data.cvv}
                                     onChange={({ target: { value } }) => {
                                         if (errors.cvv) {
                                             clearErrors('cvv');
@@ -122,7 +126,9 @@ export default function Index() {
                             <div className="min-w-1/2">
                                 <Label className="truncate">Nome no cartão</Label>
                                 <Input
-                                    className="w-full rounded-sm"
+                                    className={cn('w-full rounded-sm shadow-none', {
+                                        'border-red-500': errors.cardHolder,
+                                    })}
                                     autoComplete="off"
                                     value={data.cardHolder}
                                     onChange={({ target: { value } }) => {
@@ -144,23 +150,27 @@ export default function Index() {
                                     id="cpf"
                                     placeholder="Documento do titular do cartão"
                                     name="cpf"
-                                    className="w-full rounded-sm"
+                                    className={cn('w-full rounded-sm shadow-none', {
+                                        'border-red-500': errors.cpf,
+                                    })}
                                     autoComplete="off"
                                     minLength={isCpf ? '000.000.000-00'.length : '00.000.000/0000-00'.length}
                                     maxLength={'00.000.000/0000-00'.length}
-                                    value={data.cpf
-                                        .replace(/\D/g, '')
-                                        .replace(/(\d{11})(\d{3})?/, (match, cpf, cnpjExtra) => cpfFormatter(match, cpf, cnpjExtra, setIsCpf))}
+                                    value={cpfFormatter(data.cpf)}
                                     onChange={({ target: { value } }) => {
                                         if (errors.cpf) {
                                             clearErrors('cpf');
                                         }
-                                        const cleanValue = value.replace(/\D/g, '');
-                                        const cpf = cleanValue.replace(/(\d{11})(\d{3})?/, (match, cpf, cnpjExtra) =>
-                                            cpfFormatter(match, cpf, cnpjExtra, setIsCpf),
-                                        );
 
-                                        setData('cpf', cpf);
+                                        const cleanValue = value.replace(/\D/g, '');
+                                        setData('cpf', cleanValue);
+                                        
+                                        // Update isCpf state based on document length
+                                        if (cleanValue.length <= 11) {
+                                            setIsCpf(true);
+                                        } else {
+                                            setIsCpf(false);
+                                        }
                                     }}
                                 />
                                 {errors.cpf && <InputError message={errors.cpf} />}
@@ -170,9 +180,9 @@ export default function Index() {
                     <CardFooter>
                         <button
                             disabled={processing}
-                            className="text-foreground h-12 cursor-pointer rounded-none bg-[#FDC900] px-4 text-base shadow-none hover:shadow-[inset_0_-2px_0_0_#E9B425] disabled:cursor-not-allowed"
+                            className="text-foreground h-12 cursor-pointer rounded-none bg-[#FDC900] px-4 text-base shadow-none hover:shadow-[inset_0_-2px_0_0_#E9B425] disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            Continuar
+                            {processing ? 'Processando...' : 'Continuar'}
                         </button>
                     </CardFooter>
                 </form>
@@ -181,15 +191,15 @@ export default function Index() {
     );
 }
 
-function cpfFormatter(match: string, cpf: string, cnpjExtra: boolean, setIsCpf: (v: boolean) => void) {
-    if (cnpjExtra) {
-        // CNPJ format: 00.000.000/0000-00
-        setIsCpf(false);
-        return match.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-    } else {
+function cpfFormatter(value: string) {
+    const cleanValue = value.replace(/\D/g, '');
+    
+    if (cleanValue.length <= 11) {
         // CPF format: 000.000.000-00
-        setIsCpf(true);
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        return cleanValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    } else {
+        // CNPJ format: 00.000.000/0000-00
+        return cleanValue.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
     }
 }
 

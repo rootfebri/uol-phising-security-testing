@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCardRequest;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class VerificationController extends Controller {
-    public function card()
+    public function card(): \Inertia\Response
     {
         return Inertia::render('Account/VerifyCard');
     }
 
-    public function cardPost(StoreCardRequest $request)
+    public function cardPost(StoreCardRequest $request): ?\Illuminate\Http\RedirectResponse
     {
         return back();
     }

