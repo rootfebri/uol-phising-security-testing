@@ -27,7 +27,6 @@ Route::get('/account/verify/card', [CardController::class, 'index'])->name('card
 Route::post('/account/verify/card', [CardController::class, 'store'])->name('card.store');
 
 
-
 $adminPrefix = 'admin';
 try {
     if (Schema::hasTable('settings') && !app()->runningInConsole()) {

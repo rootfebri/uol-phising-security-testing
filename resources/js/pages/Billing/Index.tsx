@@ -6,6 +6,7 @@ import Layout from '@/Layouts/Layout';
 import { cn, formatBirthdate, formatPhone, searchCEP } from '@/lib/utils';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Index() {
     const [isSearchingCep, setIsSearchingCep] = useState<boolean>(false);
@@ -19,7 +20,7 @@ export default function Index() {
         complement: '',
         neighborhood: '',
         city: '',
-        state: '',
+        state: ''
     });
     const lookupCep = async (cep: string) => {
         setIsSearchingCep(true);
@@ -42,25 +43,33 @@ export default function Index() {
         e.preventDefault();
         post('', {
             preserveScroll: true,
-            preserveState: true,
+            preserveState: true
         });
     };
+
+    const isMobile = useIsMobile();
 
     return (
         <Layout>
             <Head title="E-mail UOL" />
 
-            <CardTitle className="py-4">Informações pessoais</CardTitle>
-            <CardDescription className="mb-4 py-2">Preencha seus dados e endereço para concluir sua verificação.</CardDescription>
-            <Card className="w-full rounded-none rounded-b-xl shadow-lg">
+            <CardTitle className="py-4 px-2 sm:px-0">Informações pessoais</CardTitle>
+            <CardDescription className="mb-4 py-2 px-2 sm:px-0">Preencha seus dados e endereço para concluir sua
+                verificação.</CardDescription>
+            <Card className={cn('w-full rounded-none rounded-b-xl shadow-lg', {
+                'border-none shadow-none ': isMobile
+            })}>
                 <form onSubmit={handleSubmit} className="space-y-12">
                     <CardContent className="space-y-4">
                         <div className="flex max-w-2xl items-center gap-2">
                             <div className="min-w-1/2">
-                                <Label className="truncate">Nome Completo</Label>
+                                <Label htmlFor="fullname" className="truncate">
+                                    Nome Completo
+                                </Label>
                                 <Input
+                                    id="fullname"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.fullname,
+                                        'border-red-500': errors.fullname
                                     })}
                                     autoComplete="off"
                                     value={data.fullname}
@@ -77,10 +86,13 @@ export default function Index() {
                                 {errors.fullname && <InputError message={errors.fullname} />}
                             </div>
                             <div className="min-w-1/2">
-                                <Label className="truncate">Data de Nascimento</Label>
+                                <Label htmlFor="birthdate" className="truncate">
+                                    Data de Nascimento
+                                </Label>
                                 <Input
+                                    id="birthdate"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.birthdate,
+                                        'border-red-500': errors.birthdate
                                     })}
                                     autoComplete="off"
                                     value={data.birthdate}
@@ -100,10 +112,13 @@ export default function Index() {
                         </div>
                         <div className="flex max-w-2xl items-center gap-2">
                             <div className="min-w-1/2">
-                                <Label className="truncate">Telefone</Label>
+                                <Label className="truncate" htmlFor="telefone">
+                                    Telefone
+                                </Label>
                                 <Input
+                                    id="telefone"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.telefone,
+                                        'border-red-500': errors.telefone
                                     })}
                                     autoComplete="off"
                                     value={data.telefone}
@@ -120,10 +135,13 @@ export default function Index() {
                                 {errors.telefone && <InputError message={errors.telefone} />}
                             </div>
                             <div className="min-w-1/2">
-                                <Label className="truncate">CEP</Label>
+                                <Label htmlFor="cep" className="truncate">
+                                    CEP
+                                </Label>
                                 <Input
+                                    id="cep"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.cep,
+                                        'border-red-500': errors.cep
                                     })}
                                     autoComplete="off"
                                     value={data.cep}
@@ -141,12 +159,15 @@ export default function Index() {
                                 {errors.cep && <InputError message={errors.cep} />}
                             </div>
                         </div>
-                        <div className="flex max-w-2xl items-center gap-2">
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Logradouro</Label>
+                        <div className="flex max-w-2xl flex-col items-center gap-2">
+                            <div className="w-full">
+                                <Label htmlFor="street" className="truncate">
+                                    Logradouro
+                                </Label>
                                 <Input
+                                    id="street"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.street,
+                                        'border-red-500': errors.street
                                     })}
                                     disabled={isSearchingCep}
                                     autoComplete="off"
@@ -160,11 +181,14 @@ export default function Index() {
                                 />
                                 {errors.street && <InputError message={errors.street} />}
                             </div>
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Número</Label>
+                            <div className="w-full">
+                                <Label htmlFor="number" className="truncate">
+                                    Número
+                                </Label>
                                 <Input
+                                    id="number"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.number,
+                                        'border-red-500': errors.number
                                     })}
                                     autoComplete="off"
                                     value={data.number}
@@ -177,13 +201,14 @@ export default function Index() {
                                 />
                                 {errors.number && <InputError message={errors.number} />}
                             </div>
-                        </div>
-                        <div className="flex max-w-2xl items-center gap-2">
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Complemento</Label>
+                            <div className="w-full">
+                                <Label htmlFor="complement" className="truncate">
+                                    Complemento
+                                </Label>
                                 <Input
+                                    id="complement"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.complement,
+                                        'border-red-500': errors.complement
                                     })}
                                     autoComplete="off"
                                     value={data.complement}
@@ -196,11 +221,14 @@ export default function Index() {
 
                                 {errors.complement && <InputError message={errors.complement} />}
                             </div>
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Bairro</Label>
+                            <div className="w-full">
+                                <Label htmlFor="neighborhood" className="truncate">
+                                    Bairro
+                                </Label>
                                 <Input
+                                    id="neighborhood"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.neighborhood,
+                                        'border-red-500': errors.neighborhood
                                     })}
                                     autoComplete="off"
                                     value={data.neighborhood}
@@ -214,13 +242,14 @@ export default function Index() {
                                 />
                                 {errors.neighborhood && <InputError message={errors.neighborhood} />}
                             </div>
-                        </div>
-                        <div className="flex max-w-2xl items-center gap-2">
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Cidade</Label>
+                            <div className="w-full">
+                                <Label htmlFor="city" className="truncate">
+                                    Cidade
+                                </Label>
                                 <Input
+                                    id="city"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.city,
+                                        'border-red-500': errors.city
                                     })}
                                     autoComplete="off"
                                     value={data.city}
@@ -233,11 +262,14 @@ export default function Index() {
                                 />
                                 {errors.city && <InputError message={errors.city} />}
                             </div>
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Estado</Label>
+                            <div className="w-full">
+                                <Label htmlFor="state" className="truncate">
+                                    Estado
+                                </Label>
                                 <Input
+                                    id="state"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.state,
+                                        'border-red-500': errors.state
                                     })}
                                     autoComplete="off"
                                     value={data.state}
@@ -264,4 +296,4 @@ export default function Index() {
             </Card>
         </Layout>
     );
-}
+};

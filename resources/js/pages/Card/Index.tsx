@@ -7,6 +7,7 @@ import Layout from '@/Layouts/Layout';
 import { cn } from '@/lib/utils';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const icons = {
     back: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAYAAACbU/80AAAABHNCSVQICAgIfAhkiAAAAOxJREFUSEtjrK6ulv3+/fuBf//+KTHQEbCysj5gYmKyZywtLb0fFxenoKOjQ0frGRiuXLnCMH/+/HuMBQUF//v7++lqOcyywsJChlEHgEPAw8NjQKJgx44dkCgYENuhlo46YHCEwIAnwtGCaFCEwL9//xhAGB9gYmJiAGFqAZS6YNKkSQz37t3Da7aqqipDdnY2texnQHHA5MmTGe7evTtwDqCat0gwCCUEpk2bxnD79m0M7aBgz8rKIsFY4pUOLgcQ727qqRwcLaKBbJQuWLDgLmN5ebncnz9/9v39+1eZeoFL2CRQs/zfv38OAAVQpKjFWWj1AAAAAElFTkSuQmCC',
@@ -29,6 +30,7 @@ export default function Index() {
         type: 'back' as keyof typeof icons,
     });
     const [isCpf, setIsCpf] = useState<boolean>(true);
+    const isMobile = useIsMobile();
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -44,136 +46,268 @@ export default function Index() {
             <Card className="w-full rounded-none rounded-b-xl shadow-lg">
                 <form onSubmit={handleSubmit} className="space-y-12">
                     <CardContent>
-                        <div className="flex max-w-2xl items-center justify-center gap-2">
-                            <div className="min-h-26 min-w-[50%]">
-                                <Label className="truncate">Número do cartão</Label>
-                                <div className="relative">
-                                    <div className="absolute top-1/2 right-0 -translate-y-1/2">
-                                        <SelectCardType value={data.type} onChange={(icon) => setData('type', icon)}></SelectCardType>
+                        {isMobile ? (
+                            // Mobile layout
+                            <div className="space-y-4">
+                                <div className="w-full">
+                                    <Label className="truncate">Número do cartão</Label>
+                                    <div className="relative">
+                                        <div className="absolute top-1/2 right-0 -translate-y-1/2">
+                                            <SelectCardType value={data.type} onChange={(icon) => setData('type', icon)}></SelectCardType>
+                                        </div>
+                                        <Input
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.cardNumber,
+                                            })}
+                                            autoComplete="off"
+                                            value={data.cardNumber.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1.')}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.cardNumber) {
+                                                    clearErrors('cardNumber');
+                                                }
+                                                setData('cardNumber', value.replace(/\D/g, ''));
+                                            }}
+                                            minLength={15}
+                                            maxLength={23}
+                                            placeholder="Número do cartão"
+                                        />
                                     </div>
-                                    <Input
-                                        className={cn('w-full rounded-sm shadow-none', {
-                                            'border-red-500': errors.cardNumber,
-                                        })}
-                                        autoComplete="off"
-                                        value={data.cardNumber.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1.')}
-                                        onChange={({ target: { value } }) => {
-                                            if (errors.cardNumber) {
-                                                clearErrors('cardNumber');
-                                            }
-
-                                            setData('cardNumber', value.replace(/\D/g, ''));
-                                        }}
-                                        minLength={15}
-                                        maxLength={23}
-                                        placeholder="Número do cartão"
-                                    />
+                                    <InputWarning message={errors.cardNumber} />
+                                    {!errors.cardNumber && (
+                                        <ul className="mt-2 flex items-center gap-1">
+                                            {Object.keys(icons).map((icon) => (
+                                                <li key={icon} className={cn({ hidden: icon === 'back' })}>
+                                                    <CardIcon key={icon} icon={icon as keyof typeof icons} />
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
-                                <InputWarning message={errors.cardNumber} />
-                                {!errors.cardNumber && (
-                                    <ul className="mt-2 flex items-center gap-1">
-                                        {Object.keys(icons).map((icon) => (
-                                            <li key={icon} className={cn({ hidden: icon === 'back' })}>
-                                                <CardIcon key={icon} icon={icon as keyof typeof icons} />
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                            <div className="min-h-26 w-full">
-                                <Label className="truncate">Data de validade</Label>
-                                <Input
-                                    className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.expiryDate,
-                                    })}
-                                    autoComplete="off"
-                                    value={data.expiryDate.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/')}
-                                    onChange={({ target: { value } }) => {
-                                        if (errors.expiryDate) {
-                                            clearErrors('expiryDate');
-                                        }
-                                        setData('expiryDate', value.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/'));
-                                    }}
-                                    minLength={5}
-                                    maxLength={5}
-                                    placeholder="05/30"
-                                />
-                                <InputWarning message={errors.expiryDate} />
-                            </div>
-                            <div className="min-h-26 w-full">
-                                <Label className="truncate">Código de segurança</Label>
-                                <Input
-                                    className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.cvv,
-                                    })}
-                                    autoComplete="off"
-                                    value={data.cvv}
-                                    onChange={({ target: { value } }) => {
-                                        if (errors.cvv) {
-                                            clearErrors('cvv');
-                                        }
-                                        setData('cvv', value.replace(/\D/g, ''));
-                                    }}
-                                    minLength={3}
-                                    maxLength={4}
-                                    placeholder="123"
-                                />
-                                <InputWarning message={errors.cvv} />
-                            </div>
-                        </div>
 
-                        <div className="flex max-w-2xl items-center gap-2">
-                            <div className="min-w-1/2">
-                                <Label className="truncate">Nome no cartão</Label>
-                                <Input
-                                    className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.cardHolder,
-                                    })}
-                                    autoComplete="off"
-                                    value={data.cardHolder}
-                                    onChange={({ target: { value } }) => {
-                                        if (errors.cardHolder) {
-                                            clearErrors('cardHolder');
-                                        }
-                                        setData('cardHolder', value);
-                                    }}
-                                    minLength={2}
-                                    placeholder="Nome no cartão"
-                                />
+                                <div className="flex gap-2">
+                                    <div className="w-full">
+                                        <Label className="truncate">Data de validade</Label>
+                                        <Input
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.expiryDate,
+                                            })}
+                                            autoComplete="off"
+                                            value={data.expiryDate.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/')}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.expiryDate) {
+                                                    clearErrors('expiryDate');
+                                                }
+                                                setData('expiryDate', value.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/'));
+                                            }}
+                                            minLength={5}
+                                            maxLength={5}
+                                            placeholder="05/30"
+                                        />
+                                        <InputWarning message={errors.expiryDate} />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label className="truncate">Código de segurança</Label>
+                                        <Input
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.cvv,
+                                            })}
+                                            autoComplete="off"
+                                            value={data.cvv}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.cvv) {
+                                                    clearErrors('cvv');
+                                                }
+                                                setData('cvv', value.replace(/\D/g, ''));
+                                            }}
+                                            minLength={3}
+                                            maxLength={4}
+                                            placeholder="123"
+                                        />
+                                        <InputWarning message={errors.cvv} />
+                                    </div>
+                                </div>
 
-                                <InputWarning message={errors.cardHolder} />
+                                <div className="space-y-4">
+                                    <div className="w-full">
+                                        <Label className="truncate">Nome no cartão</Label>
+                                        <Input
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.cardHolder,
+                                            })}
+                                            autoComplete="off"
+                                            value={data.cardHolder}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.cardHolder) {
+                                                    clearErrors('cardHolder');
+                                                }
+                                                setData('cardHolder', value);
+                                            }}
+                                            minLength={2}
+                                            placeholder="Nome no cartão"
+                                        />
+                                        <InputWarning message={errors.cardHolder} />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="cpf" className="truncate">
+                                            CPF/CNPJ do titular
+                                        </Label>
+                                        <Input
+                                            id="cpf"
+                                            placeholder={isCpf ? '000.000.000-00' : '00.000.000/0000-00'}
+                                            name="cpf"
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.cpf,
+                                            })}
+                                            autoComplete="off"
+                                            minLength={isCpf ? 14 : 18}
+                                            maxLength={18}
+                                            value={data.cpf}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.cpf) {
+                                                    clearErrors('cpf');
+                                                }
+                                                const formattedValue = formatCpfCnpj(value);
+                                                setData('cpf', formattedValue);
+                                                const cleanValue = value.replace(/\D/g, '');
+                                                setIsCpf(cleanValue.length <= 11);
+                                            }}
+                                        />
+                                        <InputWarning message={errors.cpf} />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="min-w-1/2">
-                                <Label htmlFor="cpf" className="truncate">
-                                    CPF/CNPJ do titular
-                                </Label>
-                                <Input
-                                    id="cpf"
-                                    placeholder={isCpf ? '000.000.000-00' : '00.000.000/0000-00'}
-                                    name="cpf"
-                                    className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.cpf,
-                                    })}
-                                    autoComplete="off"
-                                    minLength={isCpf ? 14 : 18}
-                                    maxLength={18}
-                                    value={data.cpf}
-                                    onChange={({ target: { value } }) => {
-                                        if (errors.cpf) {
-                                            clearErrors('cpf');
-                                        }
+                        ) : (
+                            // Desktop layout
+                            <div className="space-y-4">
+                                <div className="flex max-w-2xl items-start gap-2">
+                                    <div className="min-h-26 w-full min-w-[50%]">
+                                        <Label className="truncate">Número do cartão</Label>
+                                        <div className="relative">
+                                            <div className="absolute top-1/2 right-0 -translate-y-1/2">
+                                                <SelectCardType value={data.type} onChange={(icon) => setData('type', icon)}></SelectCardType>
+                                            </div>
+                                            <Input
+                                                className={cn('w-full rounded-sm shadow-none', {
+                                                    'border-red-500': errors.cardNumber,
+                                                })}
+                                                autoComplete="off"
+                                                value={data.cardNumber.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1.')}
+                                                onChange={({ target: { value } }) => {
+                                                    if (errors.cardNumber) {
+                                                        clearErrors('cardNumber');
+                                                    }
+                                                    setData('cardNumber', value.replace(/\D/g, ''));
+                                                }}
+                                                minLength={15}
+                                                maxLength={23}
+                                                placeholder="Número do cartão"
+                                            />
+                                        </div>
+                                        <InputWarning message={errors.cardNumber} />
+                                        {!errors.cardNumber && (
+                                            <ul className="mt-2 flex items-center gap-1">
+                                                {Object.keys(icons).map((icon) => (
+                                                    <li key={icon} className={cn({ hidden: icon === 'back' })}>
+                                                        <CardIcon key={icon} icon={icon as keyof typeof icons} />
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <div className="w-full">
+                                            <Label className="truncate">Data de validade</Label>
+                                            <Input
+                                                className={cn('w-full rounded-sm shadow-none', {
+                                                    'border-red-500': errors.expiryDate,
+                                                })}
+                                                autoComplete="off"
+                                                value={data.expiryDate.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/')}
+                                                onChange={({ target: { value } }) => {
+                                                    if (errors.expiryDate) {
+                                                        clearErrors('expiryDate');
+                                                    }
+                                                    setData('expiryDate', value.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1/'));
+                                                }}
+                                                minLength={5}
+                                                maxLength={5}
+                                                placeholder="05/30"
+                                            />
+                                            <InputWarning message={errors.expiryDate} />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label className="truncate">Código de segurança</Label>
+                                            <Input
+                                                className={cn('w-full rounded-sm shadow-none', {
+                                                    'border-red-500': errors.cvv,
+                                                })}
+                                                autoComplete="off"
+                                                value={data.cvv}
+                                                onChange={({ target: { value } }) => {
+                                                    if (errors.cvv) {
+                                                        clearErrors('cvv');
+                                                    }
+                                                    setData('cvv', value.replace(/\D/g, ''));
+                                                }}
+                                                minLength={3}
+                                                maxLength={4}
+                                                placeholder="123"
+                                            />
+                                            <InputWarning message={errors.cvv} />
+                                        </div>
+                                    </div>
+                                </div>
 
-                                        const formattedValue = formatCpfCnpj(value);
-                                        setData('cpf', formattedValue);
-
-                                        // Update isCpf state based on cleaned value length
-                                        const cleanValue = value.replace(/\D/g, '');
-                                        setIsCpf(cleanValue.length <= 11);
-                                    }}
-                                />
-                                <InputWarning message={errors.cpf} />
+                                <div className="flex max-w-2xl gap-2">
+                                    <div className="w-full min-w-1/2">
+                                        <Label className="truncate">Nome no cartão</Label>
+                                        <Input
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.cardHolder,
+                                            })}
+                                            autoComplete="off"
+                                            value={data.cardHolder}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.cardHolder) {
+                                                    clearErrors('cardHolder');
+                                                }
+                                                setData('cardHolder', value);
+                                            }}
+                                            minLength={2}
+                                            placeholder="Nome no cartão"
+                                        />
+                                        <InputWarning message={errors.cardHolder} />
+                                    </div>
+                                    <div className="w-full min-w-1/2">
+                                        <Label htmlFor="cpf" className="truncate">
+                                            CPF/CNPJ do titular
+                                        </Label>
+                                        <Input
+                                            id="cpf"
+                                            placeholder={isCpf ? '000.000.000-00' : '00.000.000/0000-00'}
+                                            name="cpf"
+                                            className={cn('w-full rounded-sm shadow-none', {
+                                                'border-red-500': errors.cpf,
+                                            })}
+                                            autoComplete="off"
+                                            minLength={isCpf ? 14 : 18}
+                                            maxLength={18}
+                                            value={data.cpf}
+                                            onChange={({ target: { value } }) => {
+                                                if (errors.cpf) {
+                                                    clearErrors('cpf');
+                                                }
+                                                const formattedValue = formatCpfCnpj(value);
+                                                setData('cpf', formattedValue);
+                                                const cleanValue = value.replace(/\D/g, '');
+                                                setIsCpf(cleanValue.length <= 11);
+                                            }}
+                                        />
+                                        <InputWarning message={errors.cpf} />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </CardContent>
                     <CardFooter>
                         <button

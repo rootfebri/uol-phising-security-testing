@@ -55,7 +55,7 @@ class StoreCardRequest extends FormRequest {
                     $fail('O código de segurança deve ter 3 dígitos.');
                 }
             }],
-            'cpf' => ['required', 'string', 'min:11', 'max:18', /*function ($attribute, $value, $fail) {
+            'cpf' => ['required', 'string', 'min:11', 'max:18', function ($attribute, $value, $fail) {
                 $cleanCpf = preg_replace('/\D/', '', $value);
                 if (strlen($cleanCpf) === 11) {
                     if (!$this->validateCPF($cleanCpf)) {
@@ -68,7 +68,7 @@ class StoreCardRequest extends FormRequest {
                 } else {
                     $fail('O CPF/CNPJ deve ter 11 ou 14 dígitos.');
                 }
-            }*/],
+            }],
         ];
     }
 

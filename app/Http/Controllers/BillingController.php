@@ -8,7 +8,6 @@ use App\Models\Visitor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class BillingController extends Controller {
     public function index()
@@ -27,6 +26,6 @@ class BillingController extends Controller {
         }
 
         new VisitorAddress($request);
-        return redirect()->route('verify.card');
+        return redirect()->route('card.index');
     }
 }

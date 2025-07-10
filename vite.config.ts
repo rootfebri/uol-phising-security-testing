@@ -15,8 +15,7 @@ const hmrOpts: HmrOptions = {
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx', 'resources/js/cc.js', 'resources/js/billing.js'],
-            ssr: 'resources/js/ssr.tsx',
+            input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
         }),
         react(),
