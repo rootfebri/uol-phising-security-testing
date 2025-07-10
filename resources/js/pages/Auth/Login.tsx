@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import UolInput from '@/components/uol-input';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import usuario from './icons_login_usuario.png';
 
@@ -15,16 +15,17 @@ export default function Login({ id }: { id?: string }) {
 
     const submitId = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/login');
+        post('');
     };
 
     const handleLogin = (e: FormEvent) => {
         e.preventDefault();
-        put('/login', {});
+        put('', {});
     };
 
     return (
         <GuestLayout>
+            <Head title="E-mail UOL" />
             <Card className="w-full max-w-sm rounded-lg border bg-white">
                 <CardHeader className="pb-6 text-center">
                     <div className="flex">

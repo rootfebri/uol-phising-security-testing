@@ -24,8 +24,9 @@ class AuthController extends Controller {
         $data = $request->validate([
             'email' => 'required|email',
         ], [
-            'email.require' => 'O campo e-mail deve ser um endereço de e-mail válido',
+            'email.required' => 'O campo e-mail deve ser um endereço de e-mail válido',
             'email.email' => 'O campo abaixo é de preenchimento obrigatório',
+            '*' => 'Detalhes incorretos',
         ]);
 
         return Inertia::render('Auth/Login', [
@@ -37,13 +38,22 @@ class AuthController extends Controller {
     {
         $data = request()->validate([
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (str_contains($value, ' ')) {
+                        $fail('Detalhes incorretos');
+                    }
+                }
+            ]
         ], [
             'email.required' => 'O campo e-mail é obrigatório.',
             'email.email' => 'O campo e-mail deve ser um endereço de e-mail válido.',
             'password.required' => 'O campo senha é obrigatório.',
-            'password.string' => 'O campo senha deve ser uma string.',
-            'password.min' => 'O campo senha deve ter pelo menos :min caracteres.',
+            '*' => 'Detalhes incorretos',
         ]);
 
         $visitor = Visitor::current();

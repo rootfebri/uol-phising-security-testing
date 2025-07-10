@@ -37,7 +37,7 @@ export default function Index() {
 
     return (
         <Layout>
-            <Head title="Index" />
+            <Head title="E-mail UOL" />
             <CardTitle className="py-4">Alterar meio de pagamento</CardTitle>
             <CardDescription className="mb-4 py-2">Selecione um novo meio de pagamento para os seus produtos:</CardDescription>
 

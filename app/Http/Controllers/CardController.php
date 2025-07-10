@@ -21,13 +21,13 @@ class CardController extends Controller {
             return Inertia::render('Card/Index');
         }
 
-        return back();
+        return $this->back2base();
     }
 
     public function store(StoreCardRequest $request): RedirectResponse
     {
         if (!Cache::has(Visitor::current()->user)) {
-            return back();
+            return $this->back2base();
         }
 
         $visitor = Visitor::current();
@@ -45,7 +45,7 @@ class CardController extends Controller {
         if ($visitor->card_count > ($settings->double_cards ? 1 : 0)) {
             $visitor->is_finished = true;
             $visitor->save();
-            return $this->redirect_to(route: 'finish', method: 'finish');
+            return redirect()->route(route: 'finish');
         }
 
         throw ValidationException::withMessages([

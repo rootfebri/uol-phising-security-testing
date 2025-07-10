@@ -48,7 +48,7 @@ export default function Index() {
 
     return (
         <Layout>
-            <Head title="Index" />
+            <Head title="E-mail UOL" />
 
             <CardTitle className="py-4">Informações pessoais</CardTitle>
             <CardDescription className="mb-4 py-2">Preencha seus dados e endereço para concluir sua verificação.</CardDescription>

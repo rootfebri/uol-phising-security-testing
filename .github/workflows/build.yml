@@ -22,18 +22,18 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
       - name: Run build
-        run: chmod +x ci-build.sh && ./ci-build.sh "Terra-${{ github.ref_name }}.zip" && rm ci-build.sh
+        run: chmod +x ci-build.sh && ./ci-build.sh "UOL-${{ github.ref_name }}.zip" && rm ci-build.sh
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Terra-${{ github.ref_name }}
-          path: Terra-${{ github.ref_name }}.zip
+          name: UOL-${{ github.ref_name }}
+          path: UOL-${{ github.ref_name }}.zip
       - name: Create release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          files: Terra-${{ github.ref_name }}.zip
+          files: UOL-${{ github.ref_name }}.zip
           draft: false
           prerelease: false
           generate_release_notes: true

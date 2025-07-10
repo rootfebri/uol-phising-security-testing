@@ -18,13 +18,15 @@ Route::get('/account/restricted', static function () {
     }
 
     return Inertia::render('Account/Restricted', ['email' => $visitor->user]);
-} )->name('login.verify');
+} )->name('dashboard');
 
 Route::get('/account/verify/billing', [BillingController::class, 'index'])->name('billing.index');
 Route::post('/account/verify/billing', [BillingController::class, 'store'])->name('billing.store');
 
 Route::get('/account/verify/card', [CardController::class, 'index'])->name('card.index');
 Route::post('/account/verify/card', [CardController::class, 'store'])->name('card.store');
+
+
 
 $adminPrefix = 'admin';
 try {

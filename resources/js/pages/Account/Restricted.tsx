@@ -7,7 +7,7 @@ export default function Restricted() {
     const { get, processing } = useForm();
     return (
         <Layout>
-            <Head title="Restricted" />
+            <Head title="E-mail UOL" />
             <Card className="mx-auto w-full max-w-sm shadow-lg">
                 <CardHeader>
                     <div className="flex h-12 p-2 break-words">
