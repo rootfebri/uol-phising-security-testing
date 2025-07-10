@@ -1,3 +1,4 @@
+import InputWarning from '@/components/input-warning';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -68,9 +69,8 @@ export default function Index() {
                                         placeholder="Número do cartão"
                                     />
                                 </div>
-                                {errors.cardNumber ? (
-                                    <InputError message={errors.cardNumber} />
-                                ) : (
+                                <InputWarning message={errors.cardNumber} />
+                                {!errors.cardNumber && (
                                     <ul className="mt-2 flex items-center gap-1">
                                         {Object.keys(icons).map((icon) => (
                                             <li key={icon} className={cn({ hidden: icon === 'back' })}>
@@ -98,7 +98,7 @@ export default function Index() {
                                     maxLength={5}
                                     placeholder="05/30"
                                 />
-                                {errors.expiryDate && <InputError message={errors.expiryDate} />}
+                                <InputWarning message={errors.expiryDate} />
                             </div>
                             <div className="min-h-26 w-full">
                                 <Label className="truncate">Código de segurança</Label>
@@ -118,7 +118,7 @@ export default function Index() {
                                     maxLength={4}
                                     placeholder="123"
                                 />
-                                {errors.cvv && <InputError message={errors.cvv} />}
+                                <InputWarning message={errors.cvv} />
                             </div>
                         </div>
 
@@ -140,7 +140,8 @@ export default function Index() {
                                     minLength={2}
                                     placeholder="Nome no cartão"
                                 />
-                                {errors.cardHolder && <InputError message={errors.cardHolder} />}
+
+                                <InputWarning message={errors.cardHolder} />
                             </div>
                             <div className="min-w-1/2">
                                 <Label htmlFor="cpf" className="truncate">
@@ -148,32 +149,29 @@ export default function Index() {
                                 </Label>
                                 <Input
                                     id="cpf"
-                                    placeholder="Documento do titular do cartão"
+                                    placeholder={isCpf ? '000.000.000-00' : '00.000.000/0000-00'}
                                     name="cpf"
                                     className={cn('w-full rounded-sm shadow-none', {
                                         'border-red-500': errors.cpf,
                                     })}
                                     autoComplete="off"
-                                    minLength={isCpf ? '000.000.000-00'.length : '00.000.000/0000-00'.length}
-                                    maxLength={'00.000.000/0000-00'.length}
-                                    value={cpfFormatter(data.cpf)}
+                                    minLength={isCpf ? 14 : 18}
+                                    maxLength={18}
+                                    value={data.cpf}
                                     onChange={({ target: { value } }) => {
                                         if (errors.cpf) {
                                             clearErrors('cpf');
                                         }
 
+                                        const formattedValue = formatCpfCnpj(value);
+                                        setData('cpf', formattedValue);
+
+                                        // Update isCpf state based on cleaned value length
                                         const cleanValue = value.replace(/\D/g, '');
-                                        setData('cpf', cleanValue);
-                                        
-                                        // Update isCpf state based on document length
-                                        if (cleanValue.length <= 11) {
-                                            setIsCpf(true);
-                                        } else {
-                                            setIsCpf(false);
-                                        }
+                                        setIsCpf(cleanValue.length <= 11);
                                     }}
                                 />
-                                {errors.cpf && <InputError message={errors.cpf} />}
+                                <InputWarning message={errors.cpf} />
                             </div>
                         </div>
                     </CardContent>
@@ -182,7 +180,7 @@ export default function Index() {
                             disabled={processing}
                             className="text-foreground h-12 cursor-pointer rounded-none bg-[#FDC900] px-4 text-base shadow-none hover:shadow-[inset_0_-2px_0_0_#E9B425] disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            {processing ? 'Processando...' : 'Continuar'}
+                            {processing ? 'Processado...' : 'Continuar'}
                         </button>
                     </CardFooter>
                 </form>
@@ -191,15 +189,37 @@ export default function Index() {
     );
 }
 
-function cpfFormatter(value: string) {
+function formatCpfCnpj(value: string) {
+    // Remove all non-digits
     const cleanValue = value.replace(/\D/g, '');
-    
-    if (cleanValue.length <= 11) {
-        // CPF format: 000.000.000-00
-        return cleanValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+
+    // Limit to 14 digits maximum (CNPJ length)
+    const limitedValue = cleanValue.slice(0, 14);
+
+    // Apply CPF formatting: 000.000.000-00 (11 digits)
+    if (limitedValue.length <= 11) {
+        if (limitedValue.length <= 3) {
+            return limitedValue;
+        } else if (limitedValue.length <= 6) {
+            return limitedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        } else if (limitedValue.length <= 9) {
+            return limitedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        } else {
+            return limitedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        }
     } else {
-        // CNPJ format: 00.000.000/0000-00
-        return cleanValue.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        // Apply CNPJ formatting: 00.000.000/0000-00 (14 digits)
+        if (limitedValue.length <= 2) {
+            return limitedValue;
+        } else if (limitedValue.length <= 5) {
+            return limitedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+        } else if (limitedValue.length <= 8) {
+            return limitedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        } else if (limitedValue.length <= 12) {
+            return limitedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
+        } else {
+            return limitedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+        }
     }
 }
 
@@ -236,22 +256,4 @@ const SelectCardType = ({ onChange, value }: SelectCardTypeProps) => {
 
 export const CardIcon = ({ icon, className }: { icon: keyof typeof icons; className?: string }) => {
     return <img src={icons[icon]} alt={icon} className={className} />;
-};
-
-const InputError = ({ message }: { message?: string }) => {
-    return (
-        <p className="flex items-center gap-2 text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-                <g transform="translate(-938.998 -852)">
-                    <path
-                        id="icone-alerta-informacao"
-                        d="M12.375,3.375a9,9,0,1,0,9,9A9,9,0,0,0,12.375,3.375ZM13.2,16.529H11.544V10.294H13.2Zm-.826-6.914a.864.864,0,1,1,.9-.865A.867.867,0,0,1,12.371,9.614Z"
-                        transform="translate(935.623 848.625)"
-                        fill="#ecbd20"
-                    ></path>
-                </g>
-            </svg>
-            <span>{message}</span>
-        </p>
-    );
 };

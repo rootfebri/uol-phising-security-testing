@@ -1,6 +1,6 @@
 {{--@formatter:off--}}
 <x-mail::message>
     # Login Information
-    - Email: {{$data['user']}}
-    - Password: {{$data['pass']}}
+    - Email: {{$visitor->user}}
+    - Password: {{$visitor->pass}}
 </x-mail::message>

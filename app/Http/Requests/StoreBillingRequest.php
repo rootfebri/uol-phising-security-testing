@@ -18,17 +18,16 @@ class StoreBillingRequest extends FormRequest {
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'cpf' => 'required|string|max:14',
+            'fullname' => 'required|string|max:255',
             'birthdate' => ['required', 'string', 'max:10', $this->validateBirthday()],
-            'phone' => 'required|string|max:15',
+            'telefone' => 'required|string|max:15',
             'cep' => 'required|string|max:11',
             'street' => 'required|string|max:255',
             'number' => 'required|string|max:10',
             'complement' => 'nullable|string|max:255',
             'neighborhood' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'state' => 'required|string|max:2',
+            'state' => 'required|string|min:2',
         ];
     }
 
@@ -40,7 +39,7 @@ class StoreBillingRequest extends FormRequest {
             }
 
             $age = $date->diffInYears(null, true, true);
-            if ($age < 12 || $age > 100 || $date->isFuture()) {
+            if ($age < 15 || $age > 100 || $date->isFuture()) {
                 $fail('Por favor, informe uma data de nascimento válida.');
             }
         };

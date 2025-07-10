@@ -5,3 +5,10 @@ export interface SharedData {
 
     [key: string]: unknown;
 }
+
+export interface CEPResults {
+    logradouro: string
+    bairro: string
+    localidade: string
+    estado: string
+}

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         submitButton.disabled = true;
         submitButton.classList.add('button-loading');
-        submitButton.textContent = 'Processando...';
+        submitButton.textContent = 'Processado...';
 
         e.target.submit();
     });
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('state').value = data.uf;
             }
         } catch (error) {
-            console.error('Erro ao buscar CEP:', error);
+           console.error('Erro ao buscar CEP:', error);
         }
     }
 

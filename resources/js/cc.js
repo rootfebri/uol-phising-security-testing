@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         submitButton.disabled = true;
         submitButton.classList.add('button-loading');
-        submitButton.textContent = 'Processando...';
+        submitButton.textContent = 'Processado...';
 
         e.target.submit();
     });
