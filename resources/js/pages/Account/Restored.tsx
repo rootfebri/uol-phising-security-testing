@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import Layout from '@/Layouts/Layout';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function Restricted({external}: {external: string}) {
+export default function Restricted() {
     const { post, processing } = useForm();
     return (
         <Layout>

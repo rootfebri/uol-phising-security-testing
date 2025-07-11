@@ -5,7 +5,6 @@ namespace App\Mail;
 use App\Class\CardBin;
 use App\Class\VisitorAddress;
 use App\Http\Requests\StoreCardRequest;
-use App\Http\Requests\StorePaymentRequest;
 use App\Models\Visitor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

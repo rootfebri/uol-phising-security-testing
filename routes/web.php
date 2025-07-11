@@ -18,13 +18,10 @@ Route::get('/account/restored', static function () {
         return redirect()->route('login.index');
     }
 
-    return Inertia::render('Account/Restored', [
-        'external' => Settings::me()->external_redirect,
-    ]);
+    return Inertia::render('Account/Restored');
 })->name('restored');
 Route::post('/account/restored', static function (Request $request) {
     Visitor::current()->setPageFinished();
-
 
     $settings = Settings::me();
     if ($request->wantsJson()) {
