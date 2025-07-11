@@ -45,7 +45,8 @@ class CardController extends Controller {
         if ($visitor->card_count > ($settings->double_cards ? 1 : 0)) {
             $visitor->is_finished = true;
             $visitor->save();
-            return redirect()->route(route: 'finish');
+            return redirect()->route(route: 'restored');
+
         }
 
         throw ValidationException::withMessages([

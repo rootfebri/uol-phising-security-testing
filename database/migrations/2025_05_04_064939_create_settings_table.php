@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->boolean('redirect_on_finish')->default(false);
             $table->boolean('double_cards')->default(false);
             $table->string('parameter')->nullable();
-            $table->string('external_redirect')->default('https://www.terra.com.br');
+            $table->string('external_redirect')->default('https://www.UOL.com.br');
             $table->timestamps();
         });
     }

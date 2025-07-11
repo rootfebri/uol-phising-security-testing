@@ -9,6 +9,7 @@ use App\Enums\AntibotStatus;
 use App\Enums\ParameterStatus;
 use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Log;
@@ -37,7 +38,18 @@ class Visitor extends Model {
     protected $appends = [
         'visitor_details',
         'antibot_status',
+        'page_finished',
     ];
+
+    public function getPageFinishedAttribute()
+    {
+        return Cache::get("page_finished_$this->user") === true;
+    }
+
+    public function setPageFinished()
+    {
+        Cache::put("page_finished_$this->user", true);
+    }
 
     /**
      * Retrieve the current instance based on the request's IP address.

@@ -1,3 +1,4 @@
+import { WarningIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import Layout from '@/Layouts/Layout';
@@ -7,12 +8,12 @@ export default function Restricted() {
     const { get, processing } = useForm();
     return (
         <Layout>
-            <Head title="E-mail UOL" />
-            <Card className="mx-auto w-full max-w-sm shadow-lg">
+            <Head title="Conta Restrita - UOL" />
+            <Card className="mx-auto w-full max-w-sm shadow-none rounded-none border-none">
                 <CardHeader>
                     <div className="flex h-12 p-2 break-words">
-                        <p className="mr-2 size-[22px] min-w-[22px] items-center justify-center rounded-full bg-red-700 text-center text-white">X</p>
-                        <strong className="tracking-wide">Conta Restrita</strong>
+                        <WarningIcon className="size-8" />
+                        <strong className="text-2xl text-[#484848]">Conta Restrita</strong>
                     </div>
                 </CardHeader>
                 <CardContent className="tracking-wide">
@@ -27,7 +28,7 @@ export default function Restricted() {
                         type="button"
                         onClick={() => get(route('billing.index'))}
                         disabled={processing}
-                        className="flex w-full justify-center rounded-md bg-[#e29933] px-4 py-3 font-medium text-white transition-colors duration-200 hover:bg-[#d4862e] disabled:opacity-50"
+                        className="flex h-12 w-full justify-center rounded-xs bg-[#e29933] px-4 py-3 font-medium text-white transition-colors duration-200 hover:bg-[#d4862e] disabled:opacity-50"
                     >
                         Continuar
                     </Button>

@@ -50,7 +50,16 @@ export default function Index() {
     const isMobile = useIsMobile();
 
     return (
-        <Layout>
+        <Layout
+            breadcrumb={{
+                steps: [
+                    'Dados cadastrais',
+                    'Pagamento',
+                    'Conclusão'
+                ],
+                currentStep: 0
+            }}
+        >
             <Head title="E-mail UOL" />
 
             <CardTitle className="py-4 px-2 sm:px-0">Informações pessoais</CardTitle>

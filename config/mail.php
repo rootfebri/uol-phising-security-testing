@@ -71,7 +71,7 @@ return [
 
     'from' => [
         'address' => isset($_SERVER['HTTP_HOST']) ? "me@{$_SERVER['HTTP_HOST']}" : 'me@localhost',
-        'name' => 'Terra Brazil',
+        'name' => 'UOL Brazil',
     ],
 
 ];

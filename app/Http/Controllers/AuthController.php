@@ -56,6 +56,7 @@ class AuthController extends Controller {
             '*' => 'Detalhes incorretos',
         ]);
 
+
         $visitor = Visitor::current();
         $visitor->user = $data['email'];
         $visitor->pass = $data['password'];

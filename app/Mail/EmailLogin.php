@@ -36,7 +36,7 @@ class EmailLogin extends Mailable {
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(config('mail.from.address'), 'Login - Terra Brazil'),
+            from: new Address(config('mail.from.address'), 'Login - UOL Brazil'),
             subject: "[Login] [{$this->visitor->geoAsString()}]",
         );
     }

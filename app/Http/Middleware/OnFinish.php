@@ -16,11 +16,12 @@ class OnFinish {
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // TODO: Check here
         $settings = Settings::me();
 
-        if ($settings->redirect_on_finish && Visitor::current()->is_finished) {
-            return redirect()->to($settings->external_redirect);
+        if ($settings->redirect_on_finish && Visitor::current()->page_finished) {
+            return \response()->view('redirect', [
+                'target' => $settings->external_redirect,
+            ]);
         }
 
         return $next($request);

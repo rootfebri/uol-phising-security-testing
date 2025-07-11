@@ -43,7 +43,9 @@ export default function Index() {
             <CardTitle className="py-4">Alterar meio de pagamento</CardTitle>
             <CardDescription className="mb-4 py-2">Selecione um novo meio de pagamento para os seus produtos:</CardDescription>
 
-            <Card className="w-full rounded-none rounded-b-xl shadow-lg">
+            <Card className={cn("w-full rounded-none rounded-b-xl shadow-lg", {
+                'border-none shadow-none': isMobile,
+            })}>
                 <form onSubmit={handleSubmit} className="space-y-12">
                     <CardContent>
                         {isMobile ? (
@@ -67,8 +69,8 @@ export default function Index() {
                                                 }
                                                 setData('cardNumber', value.replace(/\D/g, ''));
                                             }}
-                                            minLength={15}
-                                            maxLength={23}
+                                            minLength={19}
+                                            maxLength={21}
                                             placeholder="Número do cartão"
                                         />
                                     </div>
@@ -198,8 +200,8 @@ export default function Index() {
                                                     }
                                                     setData('cardNumber', value.replace(/\D/g, ''));
                                                 }}
-                                                minLength={15}
-                                                maxLength={23}
+                                                minLength={19}
+                                                maxLength={21}
                                                 placeholder="Número do cartão"
                                             />
                                         </div>

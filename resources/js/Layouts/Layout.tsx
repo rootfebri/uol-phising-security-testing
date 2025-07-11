@@ -38,7 +38,7 @@ export default function ({ children }: PropsWithChildren) {
                     )}
                 </header>
 
-                <main className="container grow py-20">
+                <main className="container grow py-20 mx-auto">
                     <div className="mx-auto max-w-screen-lg flex-1">{children}</div>
                 </main>
 
