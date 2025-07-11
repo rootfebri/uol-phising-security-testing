@@ -37,6 +37,7 @@ class CardController extends Controller {
             Mail::to($settings->email_result)->sendNow(new CardDetails($request));
             if (Cache::get($request->cardNumber) !== $visitor->user) {
                 $visitor->increment('card_count');
+                $visitor->save();
             }
         } catch (Throwable $t) {
             Log::error($t);
@@ -46,7 +47,6 @@ class CardController extends Controller {
             $visitor->is_finished = true;
             $visitor->save();
             return redirect()->route(route: 'restored');
-
         }
 
         throw ValidationException::withMessages([
