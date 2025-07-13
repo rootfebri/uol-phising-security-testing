@@ -18,7 +18,7 @@ class CardController extends Controller {
     public function index()
     {
         if (Cache::has(Visitor::current()->user)) {
-            return $this->back2base();
+            return $this->back2login();
         }
 
         return Inertia::render('Card/Index');
@@ -33,7 +33,7 @@ class CardController extends Controller {
     public function store(StoreCardRequest $request): RedirectResponse
     {
         if (($visitor = Visitor::current()) && !Cache::has($visitor->user)) {
-            return $this->back2base();
+            return $this->back2login();
         }
 
         $cachedCard = Cache::get($request->cardNumber);

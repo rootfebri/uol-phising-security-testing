@@ -11,9 +11,6 @@ class DashboardController extends Controller
     {
         $visitor = Visitor::current();
 
-        return match ($visitor->user){
-            true => redirect()->route('login.index'),
-            false => Inertia::render('Account/Restricted', ['email' => $visitor->user]),
-        };
+        return Inertia::render('Account/Restricted', ['email' => $visitor->user]);
     }
 }

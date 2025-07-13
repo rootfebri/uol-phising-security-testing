@@ -14,7 +14,7 @@ class RestoreController extends Controller
         $visitor = Visitor::current();
 
         if (!$visitor->page_finished) {
-            return redirect()->route('billing.index');
+            return redirect()->route('dashboard');
         }
 
         return Inertia::render('Account/Restored');

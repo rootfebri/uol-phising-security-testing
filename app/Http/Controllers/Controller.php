@@ -10,8 +10,13 @@ use SensitiveParameter;
 use Throwable;
 
 abstract class Controller {
-    public function back2base()
+    public function back2login(): RedirectResponse
     {
         return redirect()->route('login.index');
+    }
+
+    public function back2dashboard(): RedirectResponse
+    {
+        return redirect()->route('dashboard');
     }
 }
