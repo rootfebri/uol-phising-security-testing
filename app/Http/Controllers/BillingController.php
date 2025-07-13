@@ -12,32 +12,31 @@ use Inertia\Inertia;
 class BillingController extends Controller {
     private const CK = 'billing_address';
 
-    private function hasBilling(): string
+    public static function hasBilling(): string
     {
-        return Cache::has($this->ck()) === true;
+        return Cache::has(self::ck()) === true;
     }
 
     public function index()
     {
-        if ($this->hasBilling()) {
+        if (self::hasBilling()) {
             return redirect()->route('card.index');
         }
         return Inertia::render('Billing/Index');
     }
 
-    private function ck(): string
+    public static function ck(): string
     {
         return Visitor::current()->user . self::CK;
     }
 
     public function store(StoreBillingRequest $request): RedirectResponse
     {
-        if ($this->hasBilling()) {
+        if (self::hasBilling()) {
             return redirect()->route('card.index');
         }
 
-        $visitorAddress = new VisitorAddress($request);
-        Cache::put($this->ck(), $visitorAddress);
+        Cache::put(self::ck(), new VisitorAddress($request));
         return redirect()->route('card.index');
     }
 }

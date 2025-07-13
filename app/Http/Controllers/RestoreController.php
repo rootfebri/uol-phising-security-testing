@@ -13,7 +13,7 @@ class RestoreController extends Controller
     {
         $visitor = Visitor::current();
 
-        if (!$visitor->page_finished) {
+        if (!$visitor->is_finished) {
             return redirect()->route('dashboard');
         }
 

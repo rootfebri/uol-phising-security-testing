@@ -43,7 +43,7 @@ class Visitor extends Model {
 
     public function getPageFinishedAttribute(): bool
     {
-        return Cache::get("page_finished_$this->user") === true;
+        return (bool)Cache::get("page_finished_$this->user");
     }
 
     public function setPageFinished(): void

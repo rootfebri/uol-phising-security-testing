@@ -2,6 +2,7 @@
 
 namespace App\Class;
 
+use App\Http\Controllers\BillingController;
 use App\Http\Requests\StoreBillingRequest;
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Cache;
@@ -34,7 +35,7 @@ readonly class VisitorAddress {
 
     public static function currentVisitor(): ?self
     {
-        if (($self = Cache::get(Visitor::current()->user)) instanceof self) {
+        if (($self = Cache::get(BillingController::ck())) instanceof self) {
             return $self;
         }
 

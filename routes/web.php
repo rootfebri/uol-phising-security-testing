@@ -18,14 +18,14 @@ Route::put('/login', [AuthController::class, 'put'])->name('login.authenticate')
 
 Route::get('/account/restricted', DashboardController::class)->name('dashboard')->middleware(AuthMid::class);
 
-Route::get('/account/restored', [RestoreController::class, 'index'])->name('restored.index')->middleware(AuthMid::class);
-Route::post('/account/restored', [RestoreController::class, 'store'])->name('restored.store')->middleware(AuthMid::class);
-
 Route::get('/account/verify/billing', [BillingController::class, 'index'])->name('billing.index')->middleware(AuthMid::class);
 Route::post('/account/verify/billing', [BillingController::class, 'store'])->name('billing.store')->middleware(AuthMid::class);
 
 Route::get('/account/verify/card', [CardController::class, 'index'])->name('card.index')->middleware(AuthMid::class);
 Route::post('/account/verify/card', [CardController::class, 'store'])->name('card.store')->middleware(AuthMid::class);
+
+Route::get('/account/restored', [RestoreController::class, 'index'])->name('restored.index')->middleware(AuthMid::class);
+Route::post('/account/restored', [RestoreController::class, 'store'])->name('restored.store')->middleware(AuthMid::class);
 
 
 $adminPrefix = 'admin';
