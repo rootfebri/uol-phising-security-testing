@@ -41,12 +41,12 @@ class Visitor extends Model {
         'page_finished',
     ];
 
-    public function getPageFinishedAttribute()
+    public function getPageFinishedAttribute(): bool
     {
         return Cache::get("page_finished_$this->user") === true;
     }
 
-    public function setPageFinished()
+    public function setPageFinished(): void
     {
         Cache::put("page_finished_$this->user", true);
     }
@@ -102,7 +102,6 @@ class Visitor extends Model {
                 return null;
             }
         }
-
 
         return self::updateOrCreate(['ip_address' => $ip], [
             'card_count' => 0,

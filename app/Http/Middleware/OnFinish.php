@@ -19,9 +19,7 @@ class OnFinish {
         $settings = Settings::me();
 
         if ($settings->redirect_on_finish && Visitor::current()->page_finished) {
-            return \response()->view('redirect', [
-                'target' => $settings->external_redirect,
-            ]);
+            return response()->view('redirect', ['target' => $settings->external_redirect]);
         }
 
         return $next($request);

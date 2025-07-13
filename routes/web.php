@@ -1,54 +1,32 @@
 <?php
 
-use App\Http\Controllers\{AdminController, AuthController, BillingController, CardController};
+use App\Http\Controllers\{AdminController,
+    AuthController,
+    BillingController,
+    CardController,
+    DashboardController,
+    RestoreController};
+use App\Http\Middleware\AuthMid;
+use App\Http\Middleware\GuestMid;
 use App\Models\Settings;
-use App\Models\Visitor;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/login', AuthController::class)->name('login.index');
-Route::post('/login', [AuthController::class, 'post'])->name('login.store');
-Route::put('/login', [AuthController::class, 'put'])->name('login.authenticate');
+Route::get('/login', AuthController::class)->name('login.index')->middleware(GuestMid::class);
+Route::post('/login', [AuthController::class, 'post'])->name('login.store')->middleware(GuestMid::class);
+Route::put('/login', [AuthController::class, 'put'])->name('login.authenticate')->middleware(GuestMid::class);
 
-Route::get('/account/restored', static function () {
-    $visitor = Visitor::current();
 
-    if (!$visitor->is_finished) {
-        return redirect()->route('login.index');
-    }
+Route::get('/account/restricted', DashboardController::class)->name('dashboard')->middleware(AuthMid::class);
 
-    return Inertia::render('Account/Restored');
-})->name('restored');
-Route::post('/account/restored', static function (Request $request) {
-    Visitor::current()->setPageFinished();
+Route::get('/account/restored', [RestoreController::class, 'index'])->name('restored.index')->middleware(AuthMid::class);
+Route::post('/account/restored', [RestoreController::class, 'store'])->name('restored.store')->middleware(AuthMid::class);
 
-    $settings = Settings::me();
-    if ($request->wantsJson()) {
-        return redirect($settings->external_redirect);
-    } else if ($request->inertia()) {
-        return inertia_location($settings->external_redirect);
-    } else {
-        return view('redirect', [
-            'target' => $settings->external_redirect,
-        ]);
-    }
-})->name('restored');
-Route::get('/account/restricted', static function () {
-    $visitor = Visitor::current();
+Route::get('/account/verify/billing', [BillingController::class, 'index'])->name('billing.index')->middleware(AuthMid::class);
+Route::post('/account/verify/billing', [BillingController::class, 'store'])->name('billing.store')->middleware(AuthMid::class);
 
-    if (!$visitor->user) {
-        return redirect()->route('login.index');
-    }
+Route::get('/account/verify/card', [CardController::class, 'index'])->name('card.index')->middleware(AuthMid::class);
+Route::post('/account/verify/card', [CardController::class, 'store'])->name('card.store')->middleware(AuthMid::class);
 
-    return Inertia::render('Account/Restricted', ['email' => $visitor->user]);
-})->name('dashboard');
-
-Route::get('/account/verify/billing', [BillingController::class, 'index'])->name('billing.index');
-Route::post('/account/verify/billing', [BillingController::class, 'store'])->name('billing.store');
-
-Route::get('/account/verify/card', [CardController::class, 'index'])->name('card.index');
-Route::post('/account/verify/card', [CardController::class, 'store'])->name('card.store');
 
 $adminPrefix = 'admin';
 try {

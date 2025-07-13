@@ -30,7 +30,6 @@ readonly class VisitorAddress {
         $this->neighborhood = $request->get('neighborhood');
         $this->city = $request->get('city');
         $this->state = strtoupper($request->get('state'));
-        Cache::put(Visitor::current()->user, $this);
     }
 
     public static function currentVisitor(): ?self
