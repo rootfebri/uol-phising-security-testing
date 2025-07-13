@@ -18,7 +18,7 @@ class GuestMid
     {
         return match (is_null(Visitor::current()->user)) {
             true => $next($request),
-            false => redirect()->route('login.index'),
+            false => redirect()->route('dashboard'),
         };
     }
 }
