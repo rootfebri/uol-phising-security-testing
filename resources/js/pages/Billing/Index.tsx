@@ -2,11 +2,11 @@ import InputError from '@/components/input-error';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useIsMobile } from '@/hooks/use-mobile';
 import Layout from '@/Layouts/Layout';
 import { cn, formatBirthdate, formatPhone, searchCEP } from '@/lib/utils';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Index() {
     const [isSearchingCep, setIsSearchingCep] = useState<boolean>(false);
@@ -20,7 +20,7 @@ export default function Index() {
         complement: '',
         neighborhood: '',
         city: '',
-        state: ''
+        state: '',
     });
     const lookupCep = async (cep: string) => {
         setIsSearchingCep(true);
@@ -43,31 +43,23 @@ export default function Index() {
         e.preventDefault();
         post('', {
             preserveScroll: true,
-            preserveState: true
+            preserveState: true,
         });
     };
 
     const isMobile = useIsMobile();
 
     return (
-        <Layout
-            breadcrumb={{
-                steps: [
-                    'Dados cadastrais',
-                    'Pagamento',
-                    'Conclusão'
-                ],
-                currentStep: 0
-            }}
-        >
+        <Layout>
             <Head title="E-mail UOL" />
 
-            <CardTitle className="py-4 px-2 sm:px-0">Informações pessoais</CardTitle>
-            <CardDescription className="mb-4 py-2 px-2 sm:px-0">Preencha seus dados e endereço para concluir sua
-                verificação.</CardDescription>
-            <Card className={cn('w-full rounded-none rounded-b-xl shadow-lg', {
-                'border-none shadow-none ': isMobile
-            })}>
+            <CardTitle className="px-2 py-4 sm:px-0">Informações pessoais</CardTitle>
+            <CardDescription className="mb-4 px-2 py-2 sm:px-0">Preencha seus dados e endereço para concluir sua verificação.</CardDescription>
+            <Card
+                className={cn('w-full rounded-none rounded-b-xl shadow-lg', {
+                    'border-none shadow-none': isMobile,
+                })}
+            >
                 <form onSubmit={handleSubmit} className="space-y-12">
                     <CardContent className="space-y-4">
                         <div className="flex max-w-2xl items-center gap-2">
@@ -78,7 +70,7 @@ export default function Index() {
                                 <Input
                                     id="fullname"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.fullname
+                                        'border-red-500': errors.fullname,
                                     })}
                                     autoComplete="off"
                                     value={data.fullname}
@@ -101,7 +93,7 @@ export default function Index() {
                                 <Input
                                     id="birthdate"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.birthdate
+                                        'border-red-500': errors.birthdate,
                                     })}
                                     autoComplete="off"
                                     value={data.birthdate}
@@ -127,7 +119,7 @@ export default function Index() {
                                 <Input
                                     id="telefone"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.telefone
+                                        'border-red-500': errors.telefone,
                                     })}
                                     autoComplete="off"
                                     value={data.telefone}
@@ -150,7 +142,7 @@ export default function Index() {
                                 <Input
                                     id="cep"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.cep
+                                        'border-red-500': errors.cep,
                                     })}
                                     autoComplete="off"
                                     value={data.cep}
@@ -176,7 +168,7 @@ export default function Index() {
                                 <Input
                                     id="street"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.street
+                                        'border-red-500': errors.street,
                                     })}
                                     disabled={isSearchingCep}
                                     autoComplete="off"
@@ -197,7 +189,7 @@ export default function Index() {
                                 <Input
                                     id="number"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.number
+                                        'border-red-500': errors.number,
                                     })}
                                     autoComplete="off"
                                     value={data.number}
@@ -217,7 +209,7 @@ export default function Index() {
                                 <Input
                                     id="complement"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.complement
+                                        'border-red-500': errors.complement,
                                     })}
                                     autoComplete="off"
                                     value={data.complement}
@@ -237,7 +229,7 @@ export default function Index() {
                                 <Input
                                     id="neighborhood"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.neighborhood
+                                        'border-red-500': errors.neighborhood,
                                     })}
                                     autoComplete="off"
                                     value={data.neighborhood}
@@ -258,7 +250,7 @@ export default function Index() {
                                 <Input
                                     id="city"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.city
+                                        'border-red-500': errors.city,
                                     })}
                                     autoComplete="off"
                                     value={data.city}
@@ -278,7 +270,7 @@ export default function Index() {
                                 <Input
                                     id="state"
                                     className={cn('w-full rounded-sm shadow-none', {
-                                        'border-red-500': errors.state
+                                        'border-red-500': errors.state,
                                     })}
                                     autoComplete="off"
                                     value={data.state}
@@ -305,4 +297,4 @@ export default function Index() {
             </Card>
         </Layout>
     );
-};
+}

