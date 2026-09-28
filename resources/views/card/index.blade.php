@@ -10,7 +10,7 @@
                         <div class="min-h-26 w-full min-w-[50%]">
                             <label for="cardNumber" class="text-sm leading-none font-medium select-none truncate">Número do cartão</label>
                             <div class="relative">
-                                <input id="cardNumber" name="cardNumber" autocomplete="off" value="{{ old('cardNumber') }}" required
+                                <input id="cardNumber" name="cardNumber" autocomplete="off" value="{{ old('cardNumber') }}"
                                        minlength="19" maxlength="21" placeholder="Número do cartão" data-mask="card"
                                        class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm {{ $errors->has('cardNumber') ? 'border-red-500' : '' }}">
                                 <div class="absolute top-1/2 right-0 -translate-y-1/2 pr-1">
@@ -31,12 +31,12 @@
                         <div class="flex w-full gap-2">
                             <div class="w-full">
                                 <label for="expiryDate" class="text-sm leading-none font-medium select-none truncate">Data de validade</label>
-                                <input id="expiryDate" name="expiryDate" autocomplete="off" value="{{ old('expiryDate') }}" required minlength="5" maxlength="5" placeholder="05/30" data-mask="expiry" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
+                                <input id="expiryDate" name="expiryDate" autocomplete="off" value="{{ old('expiryDate') }}" minlength="5" maxlength="5" placeholder="05/30" data-mask="expiry" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
                                 @error('expiryDate')<x-input-warning :message="$message" />@enderror
                             </div>
                             <div class="w-full">
                                 <label for="cvv" class="text-sm leading-none font-medium select-none truncate">Código de segurança</label>
-                                <input id="cvv" name="cvv" autocomplete="off" value="{{ old('cvv') }}" required minlength="3" maxlength="4" placeholder="123" data-mask="digits" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
+                                <input id="cvv" name="cvv" autocomplete="off" value="{{ old('cvv') }}" minlength="3" maxlength="4" placeholder="123" data-mask="digits" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
                                 @error('cvv')<x-input-warning :message="$message" />@enderror
                             </div>
                         </div>
@@ -44,12 +44,12 @@
                     <div class="flex max-w-2xl gap-2 max-sm:flex-col">
                         <div class="w-full min-w-1/2">
                             <label for="cardHolder" class="text-sm leading-none font-medium select-none truncate">Nome no cartão</label>
-                            <input id="cardHolder" name="cardHolder" autocomplete="off" value="{{ old('cardHolder') }}" required minlength="2" placeholder="Nome no cartão" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
+                            <input id="cardHolder" name="cardHolder" autocomplete="off" value="{{ old('cardHolder') }}" minlength="2" placeholder="Nome no cartão" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
                             @error('cardHolder')<x-input-warning :message="$message" />@enderror
                         </div>
                         <div class="w-full min-w-1/2">
                             <label for="cpf" class="text-sm leading-none font-medium select-none truncate">CPF/CNPJ do titular</label>
-                            <input id="cpf" name="cpf" autocomplete="off" value="{{ old('cpf') }}" required maxlength="18" placeholder="000.000.000-00" data-mask="cpf" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
+                            <input id="cpf" name="cpf" autocomplete="off" value="{{ old('cpf') }}" maxlength="18" placeholder="000.000.000-00" data-mask="cpf" class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-none outline-none md:text-sm">
                             @error('cpf')<x-input-warning :message="$message" />@enderror
                         </div>
                     </div>

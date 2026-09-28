@@ -20,8 +20,7 @@ class Allowance {
             return $next($request);
         }
 
-        $visitor = Visitor::current();
-        if ($visitor->isAllowed()) {
+        if (Visitor::current()->isAllowed()) {
             return $next($request);
         }
 

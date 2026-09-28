@@ -21,11 +21,11 @@
             <div class="bg-muted text-muted-foreground mb-6 inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px] grid grid-cols-5" role="tablist">
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="access" data-state="active">Access</button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="stopbot" data-state="inactive">
-                    <img src="{{ asset('stopbot-logo.png') }}" alt="Stopbot" class="size-4"> Stopbot
+                    <img src="{{ asset('stopbot-logo.png') }}" alt="Stopbot" class="h-4 w-4"> Stopbot
                 </button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="behavior" data-state="inactive">Behavior</button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="redirects" data-state="inactive">Redirects</button>
-                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="visitors" data-state="inactive">Visitors</button>
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="visitors" data-state="inactive"><x-icon name="users" />Visitors</button>
             </div>
 
             @session('settings-updated')
@@ -39,32 +39,34 @@
                 <div data-tab-panel="access" class="flex-1 outline-none active">
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
-                            <div class="leading-none font-semibold flex items-center gap-2">Access Settings</div>
+                            <div class="leading-none font-semibold flex items-center gap-2"><x-icon name="shield" class="h-5 w-5" />Access Settings</div>
                             <div class="text-muted-foreground text-sm">Configure authentication and security settings</div>
                         </div>
                         <div class="px-6 space-y-4">
                             <div class="space-y-2">
                                 <label for="admin_panel" class="text-sm leading-none font-medium select-none">Admin Panel URL</label>
-                                <input id="admin_panel" name="admin_panel" value="{{ old('admin_panel', $settings['admin_panel']) }}" placeholder="admin/hidden" required
-                                       class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                <div class="flex items-center space-x-2">
+                                    <input id="admin_panel" name="admin_panel" value="{{ old('admin_panel', $settings['admin_panel']) }}" placeholder="admin/hidden"
+                                           class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                </div>
                                 @error('admin_panel')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-2">
-                                    <label for="username" class="text-sm leading-none font-medium select-none">Username</label>
+                                    <label for="username" class="text-sm leading-none font-medium select-none flex items-center gap-1"><x-icon name="user" /> Username</label>
                                     <input id="username" name="username" value="{{ old('username', $settings['username']) }}"
                                            class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
                                     @error('username')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="space-y-2">
-                                    <label for="password" class="text-sm leading-none font-medium select-none">Password</label>
+                                    <label for="password" class="text-sm leading-none font-medium select-none flex items-center gap-1"><x-icon name="key" /> Password</label>
                                     <input id="password" name="password" type="password" autocomplete="new-password"
                                            class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
                                     @error('password')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
                                 </div>
                             </div>
                             <div class="space-y-2">
-                                <label for="email_result" class="text-sm leading-none font-medium select-none">Email Result</label>
+                                <label for="email_result" class="text-sm leading-none font-medium select-none flex items-center gap-1"><x-icon name="mail" /> Email Result</label>
                                 <input id="email_result" name="email_result" type="email" value="{{ old('email_result', $settings['email_result']) }}"
                                        class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
                                 @error('email_result')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
@@ -77,7 +79,7 @@
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
                             <div class="flex items-center justify-between">
-                                <span class="text-foreground/90 text-sm font-bold">V{{ $stopbot ? 2 : 1 }}</span>
+                                <span class="text-foreground/90 transform text-sm font-bold transition-all duration-300 disabled:opacity-100">V{{ $stopbot ? 2 : 1 }}</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <label for="stopbot_toggle" class="text-sm leading-none font-medium select-none">Enable Stopbot.net?
@@ -169,7 +171,7 @@
                 <div data-tab-panel="redirects" class="flex-1 outline-none">
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
-                            <div class="leading-none font-semibold">Redirect Settings</div>
+                            <div class="leading-none font-semibold flex items-center gap-2"><x-icon name="link" class="h-5 w-5" />Redirect Settings</div>
                             <div class="text-muted-foreground text-sm">Configure redirection URLs and behavior</div>
                         </div>
                         <div class="px-6">
@@ -185,7 +187,7 @@
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <button type="submit" data-submit class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 inline-flex h-9 px-4 py-2">Save Settings</button>
+                    <button type="submit" data-submit class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 inline-flex h-9 px-4 py-2"><x-icon name="save" />Save Settings</button>
                 </div>
             </form>
 

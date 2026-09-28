@@ -19,9 +19,12 @@
             <footer class="mt-auto w-full border-t-2 py-4 text-center text-xs text-gray-700">
                 <p>Sua senha é secreta. Nenhum funcionário a serviço do UOL está autorizado a solicitá-la.</p>
                 <ul class="flex flex-wrap items-center justify-center gap-1">
-                    <li><a class="text-blue-500" href="#">Regras de uso</a></li><li>|</li>
-                    <li><a class="text-blue-500" href="#">Política anti-spam</a></li><li>|</li>
-                    <li><a class="text-blue-500" href="#">Crimes virtuais: denuncie</a></li><li>|</li>
+                    <li><a class="text-blue-500" href="#">Regras de uso</a></li>
+                    <li><span class="bg-foreground min-h-4 inline-block w-px"></span></li>
+                    <li><a class="text-blue-500" href="#">Política anti-spam</a></li>
+                    <li><span class="bg-foreground min-h-4 inline-block w-px"></span></li>
+                    <li><a class="text-blue-500" href="#">Crimes virtuais: denuncie</a></li>
+                    <li><span class="bg-foreground min-h-4 inline-block w-px"></span></li>
                     <li><a class="text-blue-500" href="#">Normas de Segurança e privacidade</a></li>
                 </ul>
                 <p>© 1996 - 2025 - UOL - O melhor conteúdo. Todos os direitos reservados.</p>

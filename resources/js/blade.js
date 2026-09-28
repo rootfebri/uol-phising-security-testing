@@ -1,7 +1,7 @@
 document.querySelectorAll('[data-loading-form]').forEach((form) => {
     form.addEventListener('submit', () => {
         const button = form.querySelector('[data-submit]');
-        if (button) { button.disabled = true; button.textContent = 'Processado...'; }
+        if (button) { button.disabled = true; button.textContent = form.dataset.loadingText || 'Processado...'; }
     });
 });
 
@@ -42,12 +42,21 @@ document.querySelectorAll('[data-menu-toggle]').forEach((button) => {
 document.querySelector('[data-auto-reload]')?.addEventListener('change', (event) => {
     const control = event.target;
     const label = document.querySelector('#auto-reload-label');
+    const thumb = document.querySelector('[data-auto-reload-thumb]');
+    if (thumb) thumb.classList.toggle('translate-x-9', control.checked);
     if (label) {
         label.textContent = control.checked ? 'On' : 'Off';
         // matches the original: red = polling on, green = off
         label.className = control.checked ? 'bg-red-100 text-red-800 text-xs font-medium' : 'bg-green-100 text-green-800 text-xs font-medium';
     }
 });
+
+const autoReload = document.querySelector('[data-auto-reload]');
+if (autoReload) {
+    document.querySelector('[data-auto-reload-thumb]')?.classList.toggle('translate-x-9', autoReload.checked);
+    const label = document.querySelector('#auto-reload-label');
+    if (label) label.textContent = autoReload.checked ? 'On' : 'Off';
+}
 
 let pollTimer;
 const pollVisitors = () => {

@@ -18,7 +18,7 @@
                     <p class="flex-1 cursor-pointer justify-end"><span class="flex justify-end">x</span></p>
                 </div>
                 <p class="py-2"></p>
-                <form method="POST" action="{{ route('login.authenticate') }}" class="space-y-4" data-loading-form>
+                <form method="POST" action="{{ route('login.authenticate') }}" class="space-y-4" data-loading-form data-loading-text="Corregando...">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="email" value="{{ $id }}">
@@ -39,7 +39,7 @@
                             class="w-full rounded-md bg-[#e29933] px-4 py-3 font-medium text-white transition-colors duration-200 hover:bg-[#d4862e] disabled:opacity-50">Entrar</button>
                 </form>
             @else
-                <form method="POST" action="{{ route('login.store') }}" class="space-y-4" data-loading-form>
+                <form method="POST" action="{{ route('login.store') }}" class="space-y-4" data-loading-form data-loading-text="Corregando...">
                     @csrf
                     <div class="space-y-2">
                         <p class="text-xl font-medium text-gray-800">Entrar</p>

@@ -2,7 +2,7 @@
     <div class="leading-none font-semibold px-2 py-4 sm:px-0">Informações pessoais</div>
     <div class="text-muted-foreground text-sm mb-4 px-2 py-2 sm:px-0">Preencha seus dados e endereço para concluir sua verificação.</div>
     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-none rounded-b-xl border py-6 shadow-lg max-sm:border-none max-sm:shadow-none">
-        <form method="POST" action="{{ route('billing.store') }}" class="space-y-12" data-loading-form data-cep-form>
+        <form method="POST" action="{{ route('billing.store') }}" class="space-y-12" data-loading-form data-loading-text="Processado..." data-cep-form>
             @csrf
             <div class="px-6 space-y-4">
                 <div class="flex max-w-2xl items-center gap-2">
