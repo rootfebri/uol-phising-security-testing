@@ -10,7 +10,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 use Log;
 use Throwable;
 
@@ -21,7 +20,7 @@ class CardController extends Controller {
             return $this->back2dashboard();
         }
 
-        return Inertia::render('Card/Index');
+        return view('card.index');
     }
 
     public function store(StoreCardRequest $request): RedirectResponse

@@ -9,17 +9,21 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Inertia\Inertia;
-use Inertia\Response;
 use Throwable;
 
 class AuthController extends Controller {
-    public function __invoke(): Response
+    public function __invoke()
     {
-        return Inertia::render('Auth/Login');
+        // Re-render the password step when the previous PUT failed validation.
+        $step = null;
+        if (session('errors')?->has('password')) {
+            $step = old('email');
+        }
+
+        return view('auth.login', ['id' => $step]);
     }
 
-    public function post(Request $request): Response
+    public function post(Request $request)
     {
         $data = $request->validate([
             'email' => 'required|email',
@@ -29,7 +33,7 @@ class AuthController extends Controller {
             '*' => 'Detalhes incorretos',
         ]);
 
-        return Inertia::render('Auth/Login', [
+        return view('auth.login', [
             'id' => $data['email'],
         ]);
     }

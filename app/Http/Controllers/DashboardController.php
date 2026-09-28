@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Visitor;
-use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -11,6 +10,6 @@ class DashboardController extends Controller
     {
         $visitor = Visitor::current();
 
-        return Inertia::render('Account/Restricted', ['email' => $visitor->user]);
+        return view('account.restricted', ['email' => $visitor->user]);
     }
 }

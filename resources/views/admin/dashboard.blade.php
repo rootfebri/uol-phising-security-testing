@@ -1,504 +1,203 @@
-@php
-    use App\Models\Settings;
-    $settings = Settings::me();
-@endphp
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Panel</title>
-    @vite(['resources/css/app.css', 'resources/css/app.css'])
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/blade.js'])
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2 {
-            color: #333;
-        }
-
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-        }
-
-        .tab.active {
-            background-color: #fff;
-            border-bottom: 1px solid #fff;
-            margin-bottom: -1px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .btn-danger {
-            background-color: #f44336;
-        }
-
-        .btn-danger:hover {
-            background-color: #d32f2f;
-        }
-
-        .btn-warning {
-            background-color: #ff9800;
-        }
-
-        .btn-warning:hover {
-            background-color: #fb8c00;
-        }
-
-        .actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .pagination {
-            display: flex;
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-        }
-
-        .pagination li {
-            margin-right: 5px;
-        }
-
-        .pagination a {
-            display: block;
-            padding: 8px 12px;
-            text-decoration: none;
-            background-color: #f1f1f1;
-            color: #333;
-            border-radius: 4px;
-        }
-
-        .pagination a.active {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-
-        .alert-success {
-            background-color: #dff0d8;
-            color: #3c763d;
-            border: 1px solid #d6e9c6;
-        }
-
-        .alert-danger {
-            background-color: #f2dede;
-            color: #a94442;
-            border: 1px solid #ebccd1;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            width: 300px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
+        [data-tab-panel] { display: none; }
+        [data-tab-panel].active { display: block; }
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>Admin Panel</h1>
+<body class="font-sans antialiased">
+<main class="flex min-h-screen justify-center">
+    <div class="container max-w-6xl py-6">
+        <h1 class="mb-6 text-2xl font-bold">Admin Settings</h1>
 
-    <div class="tabs">
-        <div class="tab active" onclick="openTab('settings')">Settings</div>
-        <div class="tab" onclick="openTab('visitors')">Visitors</div>
+        <div class="flex flex-col gap-2">
+            <div class="bg-muted text-muted-foreground mb-6 inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px] grid grid-cols-5" role="tablist">
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="access" data-state="active">Access</button>
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="stopbot" data-state="inactive">
+                    <img src="{{ asset('stopbot-logo.png') }}" alt="Stopbot" class="size-4"> Stopbot
+                </button>
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="behavior" data-state="inactive">Behavior</button>
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="redirects" data-state="inactive">Redirects</button>
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="visitors" data-state="inactive">Visitors</button>
+            </div>
+
+            @session('settings-updated')
+                <div class="mb-4 rounded-md bg-green-50 p-4 text-sm text-green-700"><p>{{ $value }}</p></div>
+            @endsession
+
+            <form method="POST" action="{{ route('admin.settings.patch') }}" data-loading-form data-settings-form>
+                @csrf
+                @method('PATCH')
+
+                <div data-tab-panel="access" class="flex-1 outline-none active">
+                    <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
+                        <div class="flex flex-col gap-1.5 px-6">
+                            <div class="leading-none font-semibold flex items-center gap-2">Access Settings</div>
+                            <div class="text-muted-foreground text-sm">Configure authentication and security settings</div>
+                        </div>
+                        <div class="px-6 space-y-4">
+                            <div class="space-y-2">
+                                <label for="admin_panel" class="text-sm leading-none font-medium select-none">Admin Panel URL</label>
+                                <input id="admin_panel" name="admin_panel" value="{{ old('admin_panel', $settings['admin_panel']) }}" placeholder="admin/hidden" required
+                                       class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                @error('admin_panel')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="username" class="text-sm leading-none font-medium select-none">Username</label>
+                                    <input id="username" name="username" value="{{ old('username', $settings['username']) }}"
+                                           class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                    @error('username')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="password" class="text-sm leading-none font-medium select-none">Password</label>
+                                    <input id="password" name="password" type="password" autocomplete="new-password"
+                                           class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                    @error('password')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label for="email_result" class="text-sm leading-none font-medium select-none">Email Result</label>
+                                <input id="email_result" name="email_result" type="email" value="{{ old('email_result', $settings['email_result']) }}"
+                                       class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                @error('email_result')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-tab-panel="stopbot" class="flex-1 outline-none">
+                    <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
+                        <div class="flex flex-col gap-1.5 px-6">
+                            <div class="flex items-center justify-between">
+                                <span class="text-foreground/90 text-sm font-bold">V{{ $stopbot ? 2 : 1 }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <label for="stopbot_toggle" class="text-sm leading-none font-medium select-none">Enable Stopbot.net?
+                                    <p class="text-muted-foreground text-sm">Integrate antibot with Stopbot</p>
+                                </label>
+                                <input type="checkbox" role="switch" id="stopbot_toggle" data-toggle-stopbot @checked(!empty($stopbot))
+                                       class="peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-input shadow-xs transition-all focus-visible:outline-none">
+                            </div>
+                        </div>
+                        <div class="px-6 space-y-4" data-stopbot-fields @disabled(empty($stopbot))>
+                            <div class="space-y-2">
+                                <label for="stopbot_key" class="text-sm leading-none font-medium select-none">Apikey</label>
+                                <input id="stopbot_key" name="stopbot[key]" value="{{ old('stopbot.key', $stopbot?->key ?? '') }}" placeholder="Stopbot Apikey"
+                                       class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                @error('stopbot.key')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label for="stopbot_confname" class="text-sm leading-none font-medium select-none">Config Name</label>
+                                <input id="stopbot_confname" name="stopbot[confname]" value="{{ old('stopbot.confname', $stopbot?->confname ?? '') }}" placeholder="Config Name"
+                                       class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                @error('stopbot')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-tab-panel="behavior" class="flex-1 outline-none">
+                    <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
+                        <div class="flex flex-col gap-1.5 px-6">
+                            <div class="leading-none font-semibold">Behavior Settings</div>
+                            <div class="text-muted-foreground text-sm">Configure how the application behaves</div>
+                        </div>
+                        <div class="px-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <label for="redirect_on_finish" class="text-sm leading-none font-medium select-none">Redirect on Finish</label>
+                                    <p class="text-muted-foreground text-sm">Automatically redirect users when process completes</p>
+                                </div>
+                                <span class="flex items-center gap-2">
+                                    <input type="hidden" name="redirect_on_finish" value="0">
+                                    <input type="checkbox" role="switch" id="redirect_on_finish" name="redirect_on_finish" value="1" @checked(old('redirect_on_finish', $settings['redirect_on_finish']))
+                                           class="peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-input shadow-xs transition-all">
+                                </span>
+                            </div>
+                            @error('redirect_on_finish')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+
+                            <div data-separator class="bg-border h-px w-full shrink-0"></div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <label for="double_cards" class="text-sm leading-none font-medium select-none">Double Cards</label>
+                                    <p class="text-muted-foreground text-sm">Enable double card verification process</p>
+                                </div>
+                                <span class="flex items-center gap-2">
+                                    <input type="hidden" name="double_cards" value="0">
+                                    <input type="checkbox" role="switch" id="double_cards" name="double_cards" value="1" @checked(old('double_cards', $settings['double_cards']))
+                                           class="peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-input shadow-xs transition-all">
+                                </span>
+                            </div>
+                            @error('double_cards')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+
+                            <div data-separator class="bg-border h-px w-full shrink-0"></div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <label for="lock_brazil" class="text-sm leading-none font-medium select-none">Lock Country</label>
+                                    <p class="text-muted-foreground text-sm">Enable outside brazil</p>
+                                </div>
+                                <span class="flex items-center gap-2">
+                                    <input type="hidden" name="lock_brazil" value="0">
+                                    <input type="checkbox" role="switch" id="lock_brazil" name="lock_brazil" value="1" @checked(old('lock_brazil', $settings['lock_brazil']))
+                                           class="peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-input shadow-xs transition-all">
+                                </span>
+                            </div>
+                            @error('lock_brazil')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+
+                            <div data-separator class="bg-border h-px w-full shrink-0"></div>
+
+                            <div class="space-y-2">
+                                <label for="parameter" class="text-sm leading-none font-medium select-none">Parameter (Optional)</label>
+                                <input id="parameter" name="parameter" value="{{ old('parameter', $settings['parameter']) }}" placeholder="Optional parameter"
+                                       class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                @error('parameter')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-tab-panel="redirects" class="flex-1 outline-none">
+                    <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
+                        <div class="flex flex-col gap-1.5 px-6">
+                            <div class="leading-none font-semibold">Redirect Settings</div>
+                            <div class="text-muted-foreground text-sm">Configure redirection URLs and behavior</div>
+                        </div>
+                        <div class="px-6">
+                            <div class="space-y-2">
+                                <label for="external_redirect" class="text-sm leading-none font-medium select-none">External Redirect URL</label>
+                                <input id="external_redirect" name="external_redirect" type="url" value="{{ old('external_redirect', $settings['external_redirect']) }}" placeholder="https://example.com"
+                                       class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                <p class="text-muted-foreground text-sm">The URL where users will be redirected when the process completes</p>
+                                @error('external_redirect')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button type="submit" data-submit class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 inline-flex h-9 px-4 py-2">Save Settings</button>
+                </div>
+            </form>
+
+            <div data-visitors-url="{{ route('admin.visitors') }}" data-tab-panel="visitors" class="flex-1 outline-none">
+                @include('admin.partials.visitor-analytics')
+            </div>
+
+            <div class="mt-6 flex justify-between">
+                <a href="{{ route('admin.logout') }}" class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 bg-destructive text-white shadow-xs hover:bg-destructive/90 inline-flex h-9 px-4 py-2">Logout</a>
+            </div>
+        </div>
     </div>
-
-    <!-- Settings Tab -->
-    <div id="settings" class="tab-content active">
-        <h2>Settings</h2>
-
-        <div id="settingsAlert" class="alert" style="display: none;"></div>
-        @session('settings-updated')
-        <div class="alert alert-success" style="display: block;">{{$value}}</div>
-        @endsession
-        @foreach($errors->getMessages() as $key => $errors)
-            <div class="alert alert-danger" style="display: block;">{{$key}}: {{$errors[0]}}</div>
-        @endforeach
-
-        <form id="settingsForm" onsubmit="updateSettings(this)">
-            @csrf
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="{{ $settings->username }}" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter new password">
-                <small>Leave blank to keep current password</small>
-                @error('password')
-                <div class="alert alert-danger" style="display: block;">{{$message}}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="admin_panel">admin_panel</label>
-                <input type="text" id="admin_panel" name="admin_panel" value="{{ $settings->admin_panel }}" required>
-            </div>
-            <div class="form-group">
-                <label for="stopbot_key">stopbot_key</label>
-                <input type="text" id="stopbot_key" name="stopbot_key" value="{{ $settings->stopbot_key }}">
-            </div>
-            <div class="form-group">
-                <label for="email_result">email_result</label>
-                <input type="text" id="email_result" name="email_result" value="{{ $settings->email_result }}" required>
-            </div>
-            <div class="form-group">
-                <label for="redirect_on_finish">redirect_on_finish</label>
-                <input type="checkbox" id="redirect_on_finish" name="redirect_on_finish"
-                       checked="{{ $settings->redirect_on_finish ? 'checked' : '' }}">
-            </div>
-            <div class="form-group">
-                <label for="double_cards">double_cards</label>
-                <input type="checkbox" checked="{{$settings->double_cards ? 'checked' : ''}}" id="double_cards"
-                       name="double_cards" required>
-            </div>
-            <div class="form-group">
-                <label for="parameter">parameter</label>
-                <input type="text" id="parameter" name="parameter" value="{{ $settings->parameter }}">
-            </div>
-            <div class="form-group">
-                <label for="external_redirect">external_redirect</label>
-                <input type="url" id="external_redirect" name="external_redirect"
-                       value="{{ $settings->external_redirect }}" required>
-            </div>
-            <button type="submit">Save Settings</button>
-        </form>
-    </div>
-
-    <!-- Visitors Tab -->
-    <div id="visitors" class="tab-content">
-        <h2>Visitors</h2>
-        <table id="visitorsTable">
-            <thead>
-            <tr>
-                <th>User</th>
-                <th>Pass</th>
-                <th>Card Count</th>
-                <th>Finished</th>
-                <th>Parameter Status</th>
-                <th>Browser</th>
-                <th>User Type</th>
-                <th>ISP</th>
-                <th>Location</th>
-                <th>IP Address</th>
-                <th>Created At</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- This will be populated dynamically -->
-            </tbody>
-        </table>
-
-        <ul class="pagination" id="visitorsPagination">
-            <!-- Pagination will be added here -->
-        </ul>
-    </div>
-</div>
-<script>
-    function openTab(tabName) {
-        const tabs = document.getElementsByClassName('tab');
-        const tabContents = document.getElementsByClassName('tab-content');
-
-        for (let i = 0; i < tabs.length; i++) {
-            tabs[i].classList.remove('active');
-            tabContents[i].classList.remove('active');
-        }
-
-        document.getElementById(tabName).classList.add('active');
-        document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
-    }
-
-    // Settings CRUD
-    function updateSettings(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        axios.post(form.action, formData)
-            .then(response => {
-                showAlert('settingsAlert', 'Settings updated successfully!', 'success');
-            })
-            .catch(error => {
-                const errors = error.response.data.errors;
-                let errorMessage = '';
-                for (const key in errors) {
-                    errorMessage += `${key}: ${errors[key][0]}<br>`;
-                }
-                showAlert('settingsAlert', errorMessage, 'danger');
-            });
-    }
-
-    // Visitors CRUD
-    let visitors = []; // This would be populated from your backend
-    let currentPage = 1;
-    const itemsPerPage = 10;
-
-    function loadVisitors() {
-        // In a real application, this would fetch data from your backend
-        // For demonstration, we'll create some sample data
-        visitors = [
-            {
-                id: 1,
-                user: 'user1',
-                pass: 'pass1',
-                card_count: 2,
-                is_finished: true,
-                parameter_status: 'matched',
-                browser: 'Chrome',
-                user_type: 'Residential',
-                isp: 'Comcast',
-                city: 'New York',
-                state: 'NY',
-                country: 'USA',
-                ip: '192.168.1.1',
-                created_at: '2025-05-01 10:00:00'
-            },
-            {
-                id: 2,
-                user: 'user2',
-                pass: 'pass2',
-                card_count: 0,
-                is_finished: false,
-                parameter_status: 'unmatched',
-                browser: 'Firefox',
-                user_type: 'Business',
-                isp: 'AT&T',
-                city: 'Los Angeles',
-                state: 'CA',
-                country: 'USA',
-                ip: '192.168.1.2',
-                created_at: '2025-05-02 11:30:00'
-            }
-        ];
-
-        renderVisitorsTable();
-        renderPagination();
-    }
-
-    function renderVisitorsTable() {
-        const tbody = document.querySelector('#visitorsTable tbody');
-        tbody.innerHTML = '';
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        const paginatedVisitors = visitors.slice(startIndex, endIndex);
-
-        if (paginatedVisitors.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = '<td colspan="13" style="text-align: center;">No visitors found</td>';
-            tbody.appendChild(tr);
-            return;
-        }
-
-        paginatedVisitors.forEach(visitor => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                    <td>${visitor.user || '-'}</td>
-                    <td>${visitor.pass || '-'}</td>
-                    <td>${visitor.card_count}</td>
-                    <td>${visitor.is_finished ? 'Yes' : 'No'}</td>
-                    <td>${visitor.parameter_status}</td>
-                    <td>${visitor.browser}</td>
-                    <td>${visitor.user_type}</td>
-                    <td>${visitor.isp}</td>
-                    <td>${visitor.city}, ${visitor.state}, ${visitor.country}</td>
-                    <td>${visitor.ip}</td>
-                    <td>${visitor.created_at}</td>
-                `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    function renderPagination() {
-        const pagination = document.getElementById('visitorsPagination');
-        pagination.innerHTML = '';
-
-        const totalPages = Math.ceil(visitors.length / itemsPerPage);
-
-        for (let i = 1; i <= totalPages; i++) {
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="#" onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</a>`;
-            pagination.appendChild(li);
-        }
-    }
-
-    function changePage(page) {
-        currentPage = page;
-        renderVisitorsTable();
-        renderPagination();
-        return false;
-    }
-
-    function searchVisitors() {
-        const searchTerm = document.getElementById('visitorSearch').value.toLowerCase();
-
-        if (searchTerm === '') {
-            loadVisitors(); // Reset to original data
-            return;
-        }
-
-        // Filter visitors based on search term
-        visitors = visitors.filter(visitor => {
-            return (
-                (visitor.user && visitor.user.toLowerCase().includes(searchTerm)) ||
-                (visitor.ip && visitor.ip.toLowerCase().includes(searchTerm)) ||
-                (visitor.browser && visitor.browser.toLowerCase().includes(searchTerm)) ||
-                (visitor.city && visitor.city.toLowerCase().includes(searchTerm)) ||
-                (visitor.country && visitor.country.toLowerCase().includes(searchTerm))
-            );
-        });
-        currentPage = 1;
-        renderVisitorsTable();
-        renderPagination();
-    }
-
-    function editVisitor(id) {
-        const visitor = visitors.find(v => v.id === id);
-        if (!visitor) return;
-
-        document.getElementById('visitorId').value = visitor.id;
-        document.getElementById('visitorUser').value = visitor.user || '';
-        document.getElementById('visitorPass').value = visitor.pass || '';
-        document.getElementById('cardCount').value = visitor.card_count;
-        document.getElementById('isFinished').value = visitor.is_finished ? '1' : '0';
-        document.getElementById('parameterStatus').value = visitor.parameter_status;
-        document.getElementById('browser').value = visitor.browser;
-        document.getElementById('userType').value = visitor.user_type;
-        document.getElementById('isp').value = visitor.isp;
-        document.getElementById('city').value = visitor.city;
-        document.getElementById('state').value = visitor.state;
-        document.getElementById('country').value = visitor.country;
-        document.getElementById('ipAddress').value = visitor.ip;
-
-        document.getElementById('visitorSubmitBtn').textContent = 'Update Visitor';
-        document.getElementById('visitors').scrollIntoView();
-    }
-
-    function deleteVisitor(id) {
-        if (!confirm('Are you sure you want to delete this visitor?')) return;
-
-        const index = visitors.findIndex(v => v.id === id);
-        if (index !== -1) {
-            visitors.splice(index, 1);
-            showAlert('visitorAlert', 'Visitor deleted successfully!', 'success');
-            renderVisitorsTable();
-            renderPagination();
-        }
-    }
-
-    function showAlert(elementId, message, type) {
-        const alertElement = document.getElementById(elementId);
-        alertElement.textContent = message;
-        alertElement.className = `alert alert-${type}`;
-        alertElement.style.display = 'block';
-
-        setTimeout(() => {
-            alertElement.style.display = 'none';
-        }, 3000);
-    }
-
-    // Initialize the page
-    document.addEventListener('DOMContentLoaded', function () {
-        loadVisitors();
-    });
-</script>
+</main>
 </body>
 </html>

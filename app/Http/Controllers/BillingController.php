@@ -7,7 +7,6 @@ use App\Http\Requests\StoreBillingRequest;
 use App\Models\Visitor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
-use Inertia\Inertia;
 
 class BillingController extends Controller {
     private const CK = 'billing_address';
@@ -22,7 +21,7 @@ class BillingController extends Controller {
         if (self::hasBilling()) {
             return redirect()->route('card.index');
         }
-        return Inertia::render('Billing/Index');
+        return view('billing.index');
     }
 
     public static function ck(): string

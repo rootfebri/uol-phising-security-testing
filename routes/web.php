@@ -44,6 +44,7 @@ Route::group(['as' => 'admin.', 'prefix' => $adminPrefix], static function () {
 
     Route::group(['middleware' => 'auth'], static function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/visitors', [AdminController::class, 'visitors'])->name('visitors');
         Route::patch('/update-settings', [AdminController::class, 'settings_patch'])->name('settings.patch');
         Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
     });

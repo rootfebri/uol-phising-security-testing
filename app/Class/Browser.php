@@ -10,6 +10,13 @@ use WhichBrowser\Parser;
 class Browser extends Parser implements Stringable, CastsAttributes {
     public function get($model, string $key, $value, array $attributes): Parser
     {
+        // Rows written before the cast stored a plain user-agent string instead
+        // of a serialized Parser; fall back rather than blowing up on read.
+        if (!is_string($value) || !str_starts_with($value, 'O:')) {
+            $fallback = new Browser($value ?: getallheaders());
+            return $fallback;
+        }
+
         return unserialize($value, [Parser::class]);
     }
 

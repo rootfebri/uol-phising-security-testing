@@ -14,7 +14,7 @@ use Illuminate\Validation\ValidationException;
 class AdminController extends Controller {
     public function login_index()
     {
-        return inertia('admin-login');
+        return view('admin.login');
     }
 
     public function login_post(Request $request): RedirectResponse
@@ -37,14 +37,27 @@ class AdminController extends Controller {
 
     public function dashboard()
     {
-        return inertia('dashboard', [
+        return view('admin.dashboard', [
             'settings' => [
                 ...Settings::me()->toArray(),
                 'password' => '',
             ],
+            'stopbot' => Settings::me()->stopbot,
             'settings-updated' => session('settings-updated'),
             'visitors' => Visitor::orderBy('updated_at', 'desc')->get(),
         ]);
+    }
+
+    /**
+     * Partial endpoint used by the visitor analytics auto-reload.
+     */
+    public function visitors()
+    {
+        return response(
+            view('admin.partials.visitors-table', [
+                'visitors' => Visitor::orderBy('updated_at', 'desc')->get(),
+            ])
+        )->header('X-Poll', '1');
     }
 
     public function settings_patch(UpdateSettingsRequest $request): RedirectResponse
