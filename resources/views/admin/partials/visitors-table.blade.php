@@ -59,15 +59,17 @@
                         </span>
                     </td>
                     <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0">
-                        <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 h-8 w-8 p-0"
-                                data-menu-toggle="{{ $visitor->id }}" aria-label="Open menu" aria-expanded="false">
-                            <span class="sr-only">Open menu</span>
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                        </button>
-                        <div class="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md hidden absolute right-0 mt-1" data-menu="{{ $visitor->id }}">
-                            <div class="p-1">
-                                <button type="button" class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground">Block IP</button>
-                                <button type="button" class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground text-red-600">Delete Record</button>
+                        <div class="relative flex justify-end">
+                            <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 h-8 w-8 p-0"
+                                    data-menu-toggle="{{ $visitor->id }}" aria-label="Open menu" aria-expanded="false">
+                                <span class="sr-only">Open menu</span>
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                            </button>
+                            <div class="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md hidden absolute right-0 top-full" data-menu="{{ $visitor->id }}">
+                                <div class="p-1">
+                                    <button type="button" class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground">Block IP</button>
+                                    <button type="button" class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none text-red-600 hover:bg-accent focus:bg-accent focus:text-accent-foreground">Delete Record</button>
+                                </div>
                             </div>
                         </div>
                     </td>

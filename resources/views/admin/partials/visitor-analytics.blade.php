@@ -10,9 +10,9 @@
             </div>
             <div class="flex items-center gap-2">
                 <div class="text-muted-foreground text-sm"><span>Auto Reload: </span></div>
-                <label class="peer focus-visible:ring-ring focus-visible:ring-offset-background inline-flex h-11 w-20 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-slate-700/90 transition-colors focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+                <label class="peer focus-visible:ring-ring focus-visible:ring-offset-background inline-flex h-11 w-20 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-slate-700/90 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
                     <input type="checkbox" id="auto-reload" data-auto-reload checked class="sr-only">
-                    <span class="bg-background/60 border-background/20 pointer-events-none flex h-9 w-9 translate-x-0 items-center justify-center rounded-full border shadow-lg ring-0 backdrop-blur-sm transition-transform" data-auto-reload-thumb>
+                    <span class="bg-background/60 border-background/20 pointer-events-none flex h-9 w-9 shrink-0 items-center justify-center rounded-full border shadow-lg ring-0 backdrop-blur-sm transition-transform duration-300" data-auto-reload-thumb style="transform: translateX(2.25rem)">
                         <span id="auto-reload-label" class="bg-red-100 text-red-800 text-xs font-medium" aria-label="Toggle polling">On</span>
                     </span>
                 </label>

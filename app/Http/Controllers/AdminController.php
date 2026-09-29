@@ -63,6 +63,10 @@ class AdminController extends Controller {
     public function settings_patch(UpdateSettingsRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        if (! empty($data['clear_stopbot'])) {
+            $data['stopbot'] = null;
+        }
+        unset($data['clear_stopbot']);
         if (isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         }

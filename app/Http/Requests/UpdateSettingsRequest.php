@@ -16,6 +16,22 @@ class UpdateSettingsRequest extends FormRequest {
     }
 
     /**
+     * A blank password input means "keep the current one", so it must not
+     * participate in validation or reach the update payload.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('password') && trim((string) $this->input('password')) === '') {
+            $this->request->remove('password');
+        }
+
+        // Mirror the former front-end transform: empty optional parameter is null.
+        if (array_key_exists('parameter', $this->all()) && trim((string) $this->input('parameter')) === '') {
+            $this->request->set('parameter', null);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array|string>
@@ -29,6 +45,7 @@ class UpdateSettingsRequest extends FormRequest {
             'stopbot' => 'nullable|array|required_array_keys:key', // text
             'stopbot.key' => 'string|min:1', // text
             'stopbot.confname' => 'nullable|min:1', // text
+            'clear_stopbot' => 'sometimes|accepted',
             'email_result' => 'filled|email', // email
             'parameter' => 'nullable|alpha_num',// text
             'external_redirect' => 'url',

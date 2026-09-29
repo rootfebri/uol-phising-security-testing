@@ -15,7 +15,6 @@ Route::get('/login', AuthController::class)->name('login.index')->middleware(Gue
 Route::post('/login', [AuthController::class, 'post'])->name('login.store')->middleware(GuestMid::class);
 Route::put('/login', [AuthController::class, 'put'])->name('login.authenticate')->middleware(GuestMid::class);
 
-
 Route::get('/account/restricted', DashboardController::class)->name('dashboard')->middleware(AuthMid::class);
 
 Route::get('/account/verify/billing', [BillingController::class, 'index'])->name('billing.index')->middleware(AuthMid::class);
@@ -50,6 +49,4 @@ Route::group(['as' => 'admin.', 'prefix' => $adminPrefix], static function () {
     });
 });
 
-Route::fallback(static function () {
-    return redirect()->route('login.index');
-});
+Route::fallback(static fn () => redirect()->route('login.index'));

@@ -109,7 +109,7 @@ final class Stopbot implements CastsAttributes {
     {
         $base = [
             'apikey' => $this->key,
-            'ip' => request()->ip(),
+            'ip' => GetIP(),
             'ua' => urlencode(request()->userAgent()),
             'url' => request()->fullUrl(),
         ];

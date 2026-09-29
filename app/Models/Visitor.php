@@ -59,12 +59,12 @@ class Visitor extends Model {
      */
     public static function current()
     {
-        return self::whereIpAddress(request()->ip())->first();
+        return self::whereIpAddress(GetIP())->first();
     }
 
     public static function lookup(?string $ip = null): ?static
     {
-        $ip ??= request()->ip();
+        $ip ??= GetIP();
         $browser = new Browser(getallheaders());
         $parameterStatus = ParameterStatus::get();
 

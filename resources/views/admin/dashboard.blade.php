@@ -36,7 +36,13 @@
                 @csrf
                 @method('PATCH')
 
-                <div data-tab-panel="access" class="flex-1 outline-none active">
+                @if ($errors->any())
+                    <div class="rounded-md bg-red-50 p-4 text-sm text-red-700">
+                        @foreach ($errors->all() as $message)<p>{{ $message }}</p>@endforeach
+                    </div>
+                @endif
+
+                <div data-tab-panel="access" data-settings-tab="access" class="flex-1 outline-none active">
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
                             <div class="leading-none font-semibold flex items-center gap-2"><x-icon name="shield" class="h-5 w-5" />Access Settings</div>
@@ -75,7 +81,7 @@
                     </div>
                 </div>
 
-                <div data-tab-panel="stopbot" class="flex-1 outline-none">
+                <div data-tab-panel="stopbot" data-settings-tab="stopbot" class="flex-1 outline-none">
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
                             <div class="flex items-center justify-between">
@@ -85,7 +91,7 @@
                                 <label for="stopbot_toggle" class="text-sm leading-none font-medium select-none">Enable Stopbot.net?
                                     <p class="text-muted-foreground text-sm">Integrate antibot with Stopbot</p>
                                 </label>
-                                <input type="checkbox" role="switch" id="stopbot_toggle" data-toggle-stopbot @checked(!empty($stopbot))
+                                <input type="checkbox" role="switch" id="stopbot_toggle" data-toggle-stopbot data-stopbot-panel="stopbot" @checked(!empty($stopbot))
                                        class="peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-input shadow-xs transition-all focus-visible:outline-none">
                             </div>
                         </div>
@@ -106,7 +112,7 @@
                     </div>
                 </div>
 
-                <div data-tab-panel="behavior" class="flex-1 outline-none">
+                <div data-tab-panel="behavior" data-settings-tab="behavior" class="flex-1 outline-none">
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
                             <div class="leading-none font-semibold">Behavior Settings</div>
@@ -168,7 +174,7 @@
                     </div>
                 </div>
 
-                <div data-tab-panel="redirects" class="flex-1 outline-none">
+                <div data-tab-panel="redirects" data-settings-tab="redirects" class="flex-1 outline-none">
                     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
                         <div class="flex flex-col gap-1.5 px-6">
                             <div class="leading-none font-semibold flex items-center gap-2"><x-icon name="link" class="h-5 w-5" />Redirect Settings</div>
@@ -186,7 +192,7 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
+                <div class="mt-6 flex justify-end" data-settings-actions>
                     <button type="submit" data-submit class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 inline-flex h-9 px-4 py-2"><x-icon name="save" />Save Settings</button>
                 </div>
             </form>
