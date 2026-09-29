@@ -61,6 +61,7 @@ document.querySelector('[data-toggle-stopbot]')?.addEventListener('change', (eve
 const chevronRight = '<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>';
 const chevronDown = '<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 8.25 7.5 7.5 7.5-7.5"/>';
 const expandedRows = new Set();
+const openMenus = new Set();
 
 const setRowExpanded = (id, expanded, icon) => {
     if (expanded) expandedRows.add(id);
@@ -74,6 +75,7 @@ const setRowExpanded = (id, expanded, icon) => {
 };
 
 const closeMenus = () => {
+    openMenus.clear();
     document.querySelectorAll('[data-menu]').forEach((menu) => menu.classList.add('hidden'));
     document.querySelectorAll('[data-menu-toggle]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
 };
@@ -96,11 +98,12 @@ const bindVisitorControls = () => {
         button.addEventListener('click', (event) => {
             event.stopPropagation();
             const menu = document.querySelector(`[data-menu="${button.dataset.menuToggle}"]`);
-            const wasOpen = menu && !menu.classList.contains('hidden');
+            const wasOpen = openMenus.has(button.dataset.menuToggle);
             closeMenus();
             if (menu && !wasOpen) {
                 menu.classList.remove('hidden');
                 button.setAttribute('aria-expanded', 'true');
+                openMenus.add(button.dataset.menuToggle);
             }
         });
     });
@@ -141,6 +144,10 @@ const pollVisitors = async () => {
         if (region && region.innerHTML.trim() !== html.trim()) {
             region.innerHTML = html;
             bindVisitorControls();
+            for (const id of openMenus) {
+                document.querySelector(`[data-menu="${id}"]`)?.classList.remove('hidden');
+                document.querySelector(`[data-menu-toggle="${id}"]`)?.setAttribute('aria-expanded', 'true');
+            }
         }
     } catch (error) {
         // Keep the current table visible if a poll fails.
