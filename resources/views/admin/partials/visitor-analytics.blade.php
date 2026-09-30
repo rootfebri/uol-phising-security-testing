@@ -23,5 +23,13 @@
         <div id="visitors-region">
             @include('admin.partials.visitors-table')
         </div>
+
+        {{-- Rendered outside the polling region so auto-reload never destroys the open menu. --}}
+        <div id="visitor-row-menu" data-menu class="fixed z-50 hidden min-w-[10rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
+            <div class="p-1">
+                <button type="button" class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground">Block IP</button>
+                <button type="button" class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none text-red-600 hover:bg-accent focus:bg-accent focus:text-accent-foreground">Delete Record</button>
+            </div>
+        </div>
     </div>
 </div>

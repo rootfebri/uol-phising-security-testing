@@ -65,12 +65,6 @@
                                 <span class="sr-only">Open menu</span>
                                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
                             </button>
-                            <div class="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md hidden absolute right-0 top-full" data-menu="{{ $visitor->id }}">
-                                <div class="p-1">
-                                    <button type="button" class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground">Block IP</button>
-                                    <button type="button" class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none text-red-600 hover:bg-accent focus:bg-accent focus:text-accent-foreground">Delete Record</button>
-                                </div>
-                            </div>
                         </div>
                     </td>
                 </tr>

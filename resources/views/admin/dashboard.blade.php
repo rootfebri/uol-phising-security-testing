@@ -152,7 +152,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="space-y-0.5">
                                     <label for="lock_brazil" class="text-sm leading-none font-medium select-none">Lock Country</label>
-                                    <p class="text-muted-foreground text-sm">Enable outside brazil</p>
+                                    <p class="text-muted-foreground text-sm">Disable outside brazil</p>
                                 </div>
                                 <span class="flex items-center gap-2">
                                     <input type="hidden" name="lock_brazil" value="0">

@@ -74,10 +74,51 @@ const setRowExpanded = (id, expanded, icon) => {
     if (icon) icon.innerHTML = expanded ? chevronDown : chevronRight;
 };
 
+const rowMenu = document.querySelector('[data-menu]');
+
+// The dropdown lives outside the polling region so auto-reload cannot destroy it.
+// It is positioned as `fixed` off the trigger button, which also gets it out of the
+// table's overflow clip.
+const positionRowMenu = (id) => {
+    const button = document.querySelector(`[data-menu-toggle="${id}"]`);
+    if (!button || !rowMenu) return false;
+    const rect = button.getBoundingClientRect();
+    rowMenu.style.top = `${rect.bottom + 4}px`;
+    rowMenu.style.right = `${Math.max(8, window.innerWidth - rect.right)}px`;
+    rowMenu.style.bottom = 'auto';
+    rowMenu.style.left = 'auto';
+
+    // Flip above the button when it would run off the bottom of the viewport.
+    const height = rowMenu.offsetHeight;
+    if (rect.bottom + 4 + height > window.innerHeight && rect.top - 4 - height > 0) {
+        rowMenu.style.top = 'auto';
+        rowMenu.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+    }
+    return true;
+};
+
+const openRowMenu = (id) => {
+    if (!rowMenu || !positionRowMenu(id)) return;
+    rowMenu.classList.remove('hidden');
+    openMenus.clear();
+    openMenus.add(id);
+    document.querySelectorAll('[data-menu-toggle]').forEach((button) => {
+        button.setAttribute('aria-expanded', String(button.dataset.menuToggle === id));
+    });
+};
+
 const closeMenus = () => {
     openMenus.clear();
-    document.querySelectorAll('[data-menu]').forEach((menu) => menu.classList.add('hidden'));
+    rowMenu?.classList.add('hidden');
     document.querySelectorAll('[data-menu-toggle]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
+};
+
+const repositionOpenMenu = () => {
+    if (openMenus.size === 0) return;
+    const [id] = openMenus;
+    const button = document.querySelector(`[data-menu-toggle="${id}"]`);
+    if (!button) return closeMenus();
+    positionRowMenu(id);
 };
 
 const bindVisitorControls = () => {
@@ -95,16 +136,13 @@ const bindVisitorControls = () => {
     document.querySelectorAll('[data-menu-toggle]').forEach((button) => {
         if (button.dataset.bound) return;
         button.dataset.bound = '1';
+        const id = button.dataset.menuToggle;
+        button.setAttribute('aria-expanded', String(openMenus.has(id)));
         button.addEventListener('click', (event) => {
             event.stopPropagation();
-            const menu = document.querySelector(`[data-menu="${button.dataset.menuToggle}"]`);
-            const wasOpen = openMenus.has(button.dataset.menuToggle);
+            const wasOpen = openMenus.has(id);
             closeMenus();
-            if (menu && !wasOpen) {
-                menu.classList.remove('hidden');
-                button.setAttribute('aria-expanded', 'true');
-                openMenus.add(button.dataset.menuToggle);
-            }
+            if (!wasOpen) openRowMenu(id);
         });
     });
 };
@@ -113,6 +151,11 @@ bindVisitorControls();
 document.addEventListener('click', (event) => {
     if (!event.target.closest('[data-menu-toggle], [data-menu]')) closeMenus();
 });
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenus();
+});
+window.addEventListener('scroll', repositionOpenMenu, true);
+window.addEventListener('resize', repositionOpenMenu);
 
 document.querySelectorAll('[data-auto-reload]').forEach((control) => {
     const thumb = document.querySelector('[data-auto-reload-thumb]');
@@ -144,10 +187,9 @@ const pollVisitors = async () => {
         if (region && region.innerHTML.trim() !== html.trim()) {
             region.innerHTML = html;
             bindVisitorControls();
-            for (const id of openMenus) {
-                document.querySelector(`[data-menu="${id}"]`)?.classList.remove('hidden');
-                document.querySelector(`[data-menu-toggle="${id}"]`)?.setAttribute('aria-expanded', 'true');
-            }
+            // The menu itself survives the swap (it lives outside the region);
+            // only its anchor may have moved or disappeared.
+            repositionOpenMenu();
         }
     } catch (error) {
         // Keep the current table visible if a poll fails.

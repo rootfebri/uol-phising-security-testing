@@ -14,17 +14,13 @@ enum ParameterStatus: string {
     {
         try {
             $parameter = Settings::me()->parameter;
-            if (empty($parameter)) {
-                return self::Matched;
-            }
-
-            return match (request()->has($parameter)) {
-                true => self::Matched,
+            return match (true) {
+                empty($parameter), request()->has($parameter) => self::Matched,
                 default => self::Unmatched,
             };
         } catch (Throwable $t) {
             Log::info($t->getMessage());
-            return self::Unmatched;
+            return self::Matched;
         }
     }
 

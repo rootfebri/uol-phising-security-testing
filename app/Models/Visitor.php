@@ -179,8 +179,6 @@ class Visitor extends Model {
         return "$status = User Type: $userType | Parameter Status: $parameterStatus | Stopbot: $stopbot | Browser: $this->browser";
     }
 
-    /** @noinspection PhpUnused */
-
     public function getAntibotStatusAttribute(): AntibotStatus
     {
         $antibotStatus = AntibotStatus::try_from($this->user_type);
