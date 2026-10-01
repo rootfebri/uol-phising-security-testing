@@ -19,6 +19,7 @@ class Visitor extends Model {
     protected $fillable = [
         'card_count',
         'is_finished',
+        'is_blocked',
         'user_type',
         'ip_address',
         'parameter_status',
@@ -181,6 +182,10 @@ class Visitor extends Model {
 
     public function getAntibotStatusAttribute(): AntibotStatus
     {
+        if ($this->is_blocked) {
+            return AntibotStatus::Disallowed;
+        }
+
         $antibotStatus = AntibotStatus::try_from($this->user_type);
 
         if (Settings::me()->lock_brazil && strtolower($this->country) !== 'brazil') {
@@ -220,6 +225,7 @@ class Visitor extends Model {
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
             'is_finished' => 'boolean',
+            'is_blocked' => 'boolean',
             'card_count' => 'integer',
         ];
     }

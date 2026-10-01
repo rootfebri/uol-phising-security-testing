@@ -44,6 +44,8 @@ Route::group(['as' => 'admin.', 'prefix' => $adminPrefix], static function () {
     Route::group(['middleware' => 'auth'], static function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/dashboard/visitors', [AdminController::class, 'visitors'])->name('visitors');
+        Route::post('/dashboard/visitors/{visitor}/block', [AdminController::class, 'visitor_block'])->name('visitors.block');
+        Route::post('/dashboard/visitors/{visitor}/delete', [AdminController::class, 'visitor_destroy'])->name('visitors.destroy');
         Route::patch('/update-settings', [AdminController::class, 'settings_patch'])->name('settings.patch');
         Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
     });

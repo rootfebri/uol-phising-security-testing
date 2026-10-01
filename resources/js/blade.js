@@ -105,7 +105,89 @@ const openRowMenu = (id) => {
     document.querySelectorAll('[data-menu-toggle]').forEach((button) => {
         button.setAttribute('aria-expanded', String(button.dataset.menuToggle === id));
     });
+
+    const blockButton = rowMenu.querySelector('[data-row-action="block"]');
+    const trigger = document.querySelector(`[data-menu-toggle="${id}"]`);
+    if (blockButton && trigger) {
+        blockButton.textContent = trigger.dataset.blocked === '1' ? 'Unblock IP' : 'Block IP';
+    }
+    showError('');
 };
+
+const rowActionUrl = (kind, id) => {
+    const region = document.querySelector('#visitors-region');
+    const template = region?.dataset[`${kind}Url`];
+    return template ? template.replace('__ID__', id) : null;
+};
+
+const showError = (message) => {
+    const error = rowMenu?.querySelector('[data-row-action-error]');
+    if (!error) return;
+    error.textContent = message;
+    error.classList.toggle('hidden', !message);
+};
+
+const postRowAction = async (url) => {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+            'X-Requested-With': 'XMLHttpRequest',
+            Accept: 'application/json',
+        },
+        body: new FormData(),
+    });
+    if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+    return response.json();
+};
+
+// Pull fresh rows down immediately instead of waiting for the next 1s tick.
+const refreshVisitors = async () => {
+    const region = document.querySelector('#visitors-region');
+    const url = document.querySelector('[data-visitors-url]')?.dataset.visitorsUrl;
+    if (!region || !url) return;
+    const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    if (!response.ok) return;
+    const html = await response.text();
+    if (region.innerHTML.trim() !== html.trim()) {
+        region.innerHTML = html;
+        bindVisitorControls();
+        repositionOpenMenu();
+    }
+};
+
+const runRowAction = async (kind) => {
+    const [id] = openMenus;
+    if (!id) return;
+    const url = rowActionUrl(kind, id);
+    if (!url) return;
+
+    if (kind === 'delete' && !window.confirm(`Delete record #${id}? This cannot be undone.`)) return;
+
+    showError('');
+    const blockButton = rowMenu.querySelector('[data-row-action="block"]');
+    const deleteButton = rowMenu.querySelector('[data-row-action="delete"]');
+    [blockButton, deleteButton].forEach((button) => { if (button) button.disabled = true; });
+
+    try {
+        await postRowAction(url);
+        closeMenus();
+        await refreshVisitors();
+    } catch (error) {
+        showError('Action failed. Please try again.');
+    } finally {
+        [blockButton, deleteButton].forEach((button) => { if (button) button.disabled = false; });
+    }
+};
+
+rowMenu?.querySelector('[data-row-action="block"]')?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    runRowAction('block');
+});
+rowMenu?.querySelector('[data-row-action="delete"]')?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    runRowAction('delete');
+});
 
 const closeMenus = () => {
     openMenus.clear();
@@ -180,17 +262,7 @@ let pollTimer;
 const pollVisitors = async () => {
     if (!autoReload?.checked || !visitorsUrl) return;
     try {
-        const response = await fetch(visitorsUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-        if (!response.ok) return;
-        const html = await response.text();
-        const region = document.querySelector('#visitors-region');
-        if (region && region.innerHTML.trim() !== html.trim()) {
-            region.innerHTML = html;
-            bindVisitorControls();
-            // The menu itself survives the swap (it lives outside the region);
-            // only its anchor may have moved or disappeared.
-            repositionOpenMenu();
-        }
+        await refreshVisitors();
     } catch (error) {
         // Keep the current table visible if a poll fails.
     }

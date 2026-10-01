@@ -61,7 +61,8 @@
                     <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0">
                         <div class="relative flex justify-end">
                             <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 h-8 w-8 p-0"
-                                    data-menu-toggle="{{ $visitor->id }}" aria-label="Open menu" aria-expanded="false">
+                                    data-menu-toggle="{{ $visitor->id }}" data-blocked="{{ $visitor->is_blocked ? '1' : '0' }}"
+                                    aria-label="Open menu" aria-expanded="false">
                                 <span class="sr-only">Open menu</span>
                                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
                             </button>

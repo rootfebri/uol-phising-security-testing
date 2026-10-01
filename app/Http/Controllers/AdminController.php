@@ -60,6 +60,32 @@ class AdminController extends Controller {
         )->header('X-Poll', '1');
     }
 
+    /**
+     * Toggle the block on a visitor's IP. A blocked visitor is denied by the
+     * Allowance middleware on their next request.
+     */
+    public function visitor_block(Request $request, Visitor $visitor)
+    {
+        $visitor->update(['is_blocked' => !$visitor->is_blocked]);
+
+        if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['is_blocked' => $visitor->is_blocked]);
+        }
+
+        return back()->with('settings-updated', $visitor->is_blocked ? 'IP blocked.' : 'IP unblocked.');
+    }
+
+    public function visitor_destroy(Request $request, Visitor $visitor)
+    {
+        $visitor->delete();
+
+        if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['deleted' => true]);
+        }
+
+        return back()->with('settings-updated', 'Record deleted.');
+    }
+
     public function settings_patch(UpdateSettingsRequest $request): RedirectResponse
     {
         $data = $request->validated();
