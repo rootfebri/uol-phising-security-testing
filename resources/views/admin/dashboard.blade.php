@@ -19,13 +19,14 @@
         <h1 class="mb-6 text-2xl font-bold">Admin Settings</h1>
 
         <div class="flex flex-col gap-2">
-            <div class="bg-muted text-muted-foreground mb-6 inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px] grid grid-cols-5" role="tablist">
+            <div class="bg-muted text-muted-foreground mb-6 inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px] grid grid-cols-6" role="tablist">
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="access" data-state="active">Access</button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="stopbot" data-state="inactive">
                     <img src="{{ asset('stopbot-logo.png') }}" alt="Stopbot" class="h-4 w-4"> Stopbot
                 </button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="behavior" data-state="inactive">Behavior</button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="redirects" data-state="inactive">Redirects</button>
+                <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="geo" data-state="inactive"><x-icon name="globe" />Geo</button>
                 <button type="button" class="tab-trigger data-[state=active]:bg-background text-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm" data-tab="visitors" data-state="inactive"><x-icon name="users" />Visitors</button>
             </div>
 
@@ -188,6 +189,24 @@
                                        class="border-input text-muted-foreground placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
                                 <p class="text-muted-foreground text-sm">The URL where users will be redirected when the process completes</p>
                                 @error('external_redirect')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-tab-panel="geo" data-settings-tab="geo" class="flex-1 outline-none">
+                    <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
+                        <div class="flex flex-col gap-1.5 px-6">
+                            <div class="leading-none font-semibold flex items-center gap-2"><x-icon name="globe" class="h-5 w-5" />Geo Lookup Settings</div>
+                            <div class="text-muted-foreground text-sm">Configure the IP geolocation provider</div>
+                        </div>
+                        <div class="px-6 space-y-4">
+                            <div class="space-y-2">
+                                <label for="ipify_key" class="text-sm leading-none font-medium select-none flex items-center gap-1"><x-icon name="key" /> Ipify API Key</label>
+                                <input id="ipify_key" name="ipify_key" value="{{ old('ipify_key', $settings['ipify_key'] ?? '') }}" placeholder="..." autocomplete="off"
+                                       class="border-input text-muted-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none md:text-sm">
+                                <p class="text-muted-foreground text-sm">Fallback geolocation source used when FindIP cannot resolve an address. Leave blank to use the built-in key.</p>
+                                @error('ipify_key')<p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
                             </div>
                         </div>
                     </div>

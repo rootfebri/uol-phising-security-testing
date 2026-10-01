@@ -53,6 +53,10 @@ class AdminController extends Controller {
      */
     public function visitors()
     {
+        // This fires every second and would otherwise age out flash data set by
+        // settings_patch before the redirected dashboard gets to render it.
+        session()->reflash();
+
         return response(
             view('admin.partials.visitors-table', [
                 'visitors' => Visitor::orderBy('updated_at', 'desc')->get(),

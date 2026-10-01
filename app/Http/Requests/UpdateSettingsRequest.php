@@ -49,6 +49,7 @@ class UpdateSettingsRequest extends FormRequest {
             'email_result' => 'filled|email', // email
             'parameter' => 'nullable|alpha_num',// text
             'external_redirect' => 'url',
+            'ipify_key' => 'nullable|string|min:1', // text
             'redirect_on_finish' => 'filled|bool', // checkbox
             'double_cards' => 'filled|bool', // checkbox
             'lock_brazil' => 'filled|bool', // checkbox

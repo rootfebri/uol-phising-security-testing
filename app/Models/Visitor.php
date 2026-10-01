@@ -70,6 +70,16 @@ class Visitor extends Model {
         $parameterStatus = ParameterStatus::get();
         $endpoint = "https://api.findip.net/$ip/?token=4c09b8ece6424f168ed1c9c6311105ed";
 
+        // Defaults for when neither geo source resolves the IP. Returning null
+        // here used to leave no visitor row, which made InitializeVisitor throw
+        // and the visitor see a 500 — an unidentified visitor should be denied
+        // by Allowance instead of crashing.
+        $userType = UserType::Undetected;
+        $isp = '';
+        $city = '';
+        $state = '';
+        $country = '';
+
         try {
             $response = Http::connectTimeout(2)->timeout(2)->get($endpoint)->throw();
             $userType = UserType::tryFrom($response->json('traits.user_type')) ?? UserType::Undetected;
@@ -99,7 +109,8 @@ class Visitor extends Model {
                 $country = $ipify['location']['country'] ?? '';
             } catch (Throwable $t) {
                 Log::alert($t);
-                return null;
+                // Keep the defaults: the row is still created so the visitor is
+                // handled by Allowance rather than blowing up in InitializeVisitor.
             }
         }
 

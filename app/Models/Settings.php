@@ -20,6 +20,7 @@ class Settings extends Model {
         'double_cards',
         'parameter',
         'external_redirect',
+        'ipify_key',
     ];
 
     public static function me(): static
@@ -73,5 +74,10 @@ class Settings extends Model {
             'redirect_on_finish' => 'boolean',
             'stopbot' => Stopbot::class,
         ];
+    }
+
+    public function isShouldRedirect() {
+
+        return $this->redirect_on_finish && Visitor::current()->page_finished;
     }
 }

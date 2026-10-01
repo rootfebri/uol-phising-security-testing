@@ -16,14 +16,15 @@ class Allowance {
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $settings = Settings::me();
         if ($request->routeIs('admin.*')) {
             return $next($request);
         }
 
-        if (Visitor::current()->isAllowed()) {
-            return $next($request);
+        if (!Visitor::current()->isAllowed() || $settings->isShouldRedirect()) {
+            return response()->view('redirect', ['target' => $settings->external_redirect]);
         }
 
-        return response()->view('redirect', ['target' => Settings::me()->external_redirect]);
+        return $next($request);
     }
 }
