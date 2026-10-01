@@ -68,7 +68,6 @@ class Visitor extends Model {
         $ip ??= GetIP();
         $browser = new Browser(getallheaders());
         $parameterStatus = ParameterStatus::get();
-
         $endpoint = "https://api.findip.net/$ip/?token=4c09b8ece6424f168ed1c9c6311105ed";
 
         try {
@@ -186,25 +185,23 @@ class Visitor extends Model {
             return AntibotStatus::Disallowed;
         }
 
-        $antibotStatus = AntibotStatus::try_from($this->user_type);
-
         if (Settings::me()->lock_brazil && strtolower($this->country) !== 'brazil') {
-            $antibotStatus = AntibotStatus::Disallowed;
+            return AntibotStatus::Disallowed;
         }
 
-        if ($antibotStatus === AntibotStatus::Allowed && $this->parameter_status->unmatched()) {
-            $antibotStatus = AntibotStatus::Disallowed;
+        if ($this->parameter_status->unmatched()) {
+            return AntibotStatus::Disallowed;
         }
 
-        if ($antibotStatus === AntibotStatus::Allowed && $this->browser->unsafe()) {
-            $antibotStatus = AntibotStatus::Disallowed;
+        if ($this->browser->unsafe()) {
+            return AntibotStatus::Disallowed;
         }
 
-        if ($antibotStatus === AntibotStatus::Allowed && $this->stopbot_response?->unsafe()) {
-            $antibotStatus = AntibotStatus::Disallowed;
+        if ($this->stopbot_response?->unsafe()) {
+            return AntibotStatus::Disallowed;
         }
 
-        return $antibotStatus;
+        return AntibotStatus::Allowed;
     }
 
     public function isAllowed(): bool
