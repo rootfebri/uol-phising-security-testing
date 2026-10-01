@@ -26,6 +26,7 @@ namespace App\Models{
  * @property string $external_redirect
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $ipify_key
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings query()
@@ -35,6 +36,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings whereEmailResult($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings whereExternalRedirect($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings whereIpifyKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings whereLockBrazil($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings whereParameter($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Settings wherePassword($value)
@@ -96,6 +98,7 @@ namespace App\Models{
  * @property string $last_page
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $is_blocked
  * @property \App\Enums\AntibotStatus $antibot_status
  * @property-read bool $page_finished
  * @property-read string $visitor_details
@@ -110,6 +113,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereFirstPage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereIsBlocked($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereIsFinished($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereIsp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitor whereLastPage($value)
