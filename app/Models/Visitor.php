@@ -183,36 +183,149 @@ class Visitor extends Model {
 
     public function getVisitorDetailsAttribute(): string
     {
-        $status = $this->antibot_status->name;
-        $userType = $this->user_type->name;
-        $parameterStatus = $this->parameter_status->name;
-        $stopbot = $this->stopbot_response?->Status->Desc ?? 'Unknown';
-        return "$status = User Type: $userType | Parameter Status: $parameterStatus | Stopbot: $stopbot | Browser: $this->browser";
+        $evaluation = $this->evaluateAntibot();
+        $reason = $evaluation['reason'] !== null
+            ? self::antibotReasonLabels()[$evaluation['reason']]
+            : 'None';
+
+        return "Status: {$evaluation['status']->name} | Reason: $reason | User Type: {$this->user_type->name} | Parameter Status: {$this->parameter_status->name} | Stopbot: {$this->stopbotDetail()} | Browser: $this->browser";
+    }
+
+    /**
+     * Primary reason a visitor was denied, as a short admin-facing label.
+     * Null when the visitor is allowed.
+     */
+    public function getAntibotReasonAttribute(): ?string
+    {
+        $reason = $this->evaluateAntibot()['reason'];
+
+        return $reason !== null ? self::antibotReasonLabels()[$reason] : null;
+    }
+
+    /** @return array<int, array{id: string, label: string, passed: bool, detail: string}> */
+    public function getAntibotChecksAttribute(): array
+    {
+        return $this->evaluateAntibot()['checks'];
     }
 
     public function getAntibotStatusAttribute(): AntibotStatus
     {
-        if ($this->is_blocked) {
-            return AntibotStatus::Disallowed;
+        return $this->evaluateAntibot()['status'];
+    }
+
+    /**
+     * Evaluate every antibot rule once and derive status, the primary reason
+     * (first failing check, by precedence) and the full checklist.
+     *
+     * Checks are derived from live visitor attributes plus current settings, so
+     * the result is deliberately not persisted — storing it would go stale when
+     * `lock_brazil` / the parameter setting change.
+     *
+     * @return array{status: AntibotStatus, reason: ?string, checks: array<int, array{id: string, label: string, passed: bool, detail: string}>}
+     */
+    public function evaluateAntibot(): array
+    {
+        $lockBrazil = Settings::me()->lock_brazil;
+
+        $checks = [
+            [
+                'id' => 'blocked',
+                'label' => 'Manual IP block',
+                'passed' => !$this->is_blocked,
+                'detail' => $this->is_blocked ? 'Blocked from the admin panel' : 'Not blocked',
+            ],
+            [
+                'id' => 'country',
+                'label' => 'Brazil lock',
+                'passed' => !$lockBrazil || strtolower($this->country) === 'brazil',
+                'detail' => $lockBrazil
+                    ? ($this->country !== '' ? "Country: $this->country" : 'Country unknown')
+                    : 'Lock disabled',
+            ],
+            [
+                'id' => 'user_type',
+                'label' => 'IP classification',
+                'passed' => $this->user_type !== UserType::Undetected,
+                'detail' => "Detected as: {$this->user_type->name}",
+            ],
+            [
+                'id' => 'parameter',
+                'label' => 'Parameter',
+                'passed' => $this->parameter_status->matched(),
+                'detail' => $this->parameter_status->matched() ? 'Matched' : 'Unmatched',
+            ],
+            [
+                'id' => 'browser',
+                'label' => 'Browser',
+                'passed' => !$this->browser->unsafe(),
+                'detail' => $this->browserDetail(),
+            ],
+            [
+                'id' => 'stopbot',
+                'label' => 'Stopbot',
+                'passed' => !$this->stopbot_response?->unsafe(),
+                'detail' => $this->stopbotDetail(),
+            ],
+        ];
+
+        $failed = array_values(array_filter($checks, static fn (array $check) => !$check['passed']));
+        $firstFailure = $failed[0]['id'] ?? null;
+
+        $status = match (true) {
+            $firstFailure === null => AntibotStatus::Allowed,
+            // An unclassified IP is its own outcome: deny, but label it Unknown
+            // rather than claiming a specific threat was detected. If any other
+            // check also failed, the result is a plain Disallowed.
+            $firstFailure === 'user_type' && count($failed) === 1 => AntibotStatus::Unknown,
+            default => AntibotStatus::Disallowed,
+        };
+
+        return ['status' => $status, 'reason' => $firstFailure, 'checks' => $checks];
+    }
+
+    /** Short admin-facing labels keyed by check id. */
+    private static function antibotReasonLabels(): array
+    {
+        return [
+            'blocked' => 'Manual IP block',
+            'country' => 'Outside Brazil',
+            'user_type' => 'IP not classified',
+            'parameter' => 'Parameter unmatched',
+            'browser' => 'Unsafe browser',
+            'stopbot' => 'Blocked by Stopbot',
+        ];
+    }
+
+    private function browserDetail(): string
+    {
+        $browser = $this->browser;
+        if (!$browser->unsafe()) {
+            return (string)$browser;
         }
 
-        if (Settings::me()->lock_brazil && strtolower($this->country) !== 'brazil') {
-            return AntibotStatus::Disallowed;
+        $reasons = [];
+        if ($browser->camouflage) {
+            $reasons[] = 'camouflage detected';
+        }
+        if ($browser->isType('bot')) {
+            $reasons[] = 'bot';
+        }
+        if (!$browser->isType('desktop') && !$browser->isType('mobile')) {
+            $reasons[] = 'unknown device type';
         }
 
-        if ($this->parameter_status->unmatched()) {
-            return AntibotStatus::Disallowed;
+        return ($reasons !== [] ? implode(', ', $reasons) . ' — ' : '') . $browser;
+    }
+
+    private function stopbotDetail(): string
+    {
+        if ($this->stopbot_response === null) {
+            return 'Not configured';
         }
 
-        if ($this->browser->unsafe()) {
-            return AntibotStatus::Disallowed;
-        }
-
-        if ($this->stopbot_response?->unsafe()) {
-            return AntibotStatus::Disallowed;
-        }
-
-        return AntibotStatus::Allowed;
+        return $this->stopbot_response->unsafe()
+            ? 'Blocked: ' . ($this->stopbot_response->status->Desc ?: 'no detail')
+            : 'Passed: ' . ($this->stopbot_response->status->Desc ?: 'no detail');
     }
 
     public function isAllowed(): bool

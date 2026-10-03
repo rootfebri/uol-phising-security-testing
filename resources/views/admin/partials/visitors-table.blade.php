@@ -49,6 +49,9 @@
                     <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0">
                         <div class="flex flex-col gap-1">
                             <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 transition-[color,box-shadow] overflow-hidden border {{ $statusColor }}">{{ $status->name }}</span>
+                            @if ($visitor->antibot_reason)
+                                <p class="text-muted-foreground max-w-[140px] text-[11px] leading-tight" title="{{ $visitor->antibot_reason }}">{{ $visitor->antibot_reason }}</p>
+                            @endif
                         </div>
                     </td>
                     <td class="p-2 align-middle [&:has([role=checkbox])]:pr-0">
@@ -78,10 +81,24 @@
                             <div>
                                 <h4 class="text-muted-foreground mb-1 text-xs font-semibold">Parameter Status</h4>
                                 <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap shrink-0 transition-[color,box-shadow] overflow-hidden border {{ $paramColor }}">{{ $visitor->parameter_status->name }}</span>
+                            </div>
+                            <div>
                                 <h4 class="text-muted-foreground mb-1 text-xs font-semibold">Antibot Status</h4>
                                 <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap shrink-0 transition-[color,box-shadow] overflow-hidden border {{ $statusColor }}">{{ $status->name }}</span>
-                                <h4 class="text-muted-foreground mb-1 text-xs font-semibold">Details</h4>
-                                <p>{{ $visitor->visitor_details }}</p>
+                                @if ($visitor->antibot_reason)
+                                    <p class="mt-1 text-xs font-medium">Primary reason: {{ $visitor->antibot_reason }}</p>
+                                @endif
+                            </div>
+                            <div class="col-span-full">
+                                <h4 class="text-muted-foreground mb-1 text-xs font-semibold">Antibot Decision Checklist</h4>
+                                <ul class="space-y-1 text-xs">
+                                    @foreach ($visitor->antibot_checks as $check)
+                                        <li class="flex items-start gap-1.5">
+                                            <span aria-label="{{ $check['passed'] ? 'Passed' : 'Failed' }}" class="{{ $check['passed'] ? 'text-green-600' : 'text-red-600' }}">{{ $check['passed'] ? '✓' : '✗' }}</span>
+                                            <span>{{ $check['label'] }} <span class="text-muted-foreground">— {{ $check['detail'] }}</span></span>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
                             <div>
                                 <h4 class="text-muted-foreground mb-1 text-xs font-semibold">Pages</h4>
