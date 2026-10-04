@@ -18,6 +18,12 @@ class InitializeVisitor {
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Admin routes use their own authentication and must never create or
+        // update a visitor record for the administrator's browsing session.
+        if ($request->routeIs('admin.*')) {
+            return $next($request);
+        }
+
         if (!Visitor::current()) {
             Visitor::lookup();
         }
