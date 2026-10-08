@@ -68,7 +68,7 @@ class Visitor extends Model {
         $ip ??= GetIP();
         $browser = new Browser(getallheaders());
         $parameterStatus = ParameterStatus::get();
-        $endpoint = "https://api.findip.net/$ip/?token=4c09b8ece6424f168ed1c9c6311105ed";
+        $endpoint = "https://api.findip.net/$ip/?token=76e13cdf895e411ca235d5d9e072f05b";
 
         // Defaults for when neither geo source resolves the IP. Returning null
         // here used to leave no visitor row, which made InitializeVisitor throw
@@ -237,7 +237,7 @@ class Visitor extends Model {
             [
                 'id' => 'country',
                 'label' => 'Brazil lock',
-                'passed' => !$lockBrazil || strtolower($this->country) === 'brazil',
+                'passed' => !$lockBrazil || strtolower($this->country) === 'br' || strtolower($this->country) === 'brazil',
                 'detail' => $lockBrazil
                     ? ($this->country !== '' ? "Country: $this->country" : 'Country unknown')
                     : 'Lock disabled',
